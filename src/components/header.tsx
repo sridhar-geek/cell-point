@@ -12,10 +12,10 @@ const Header = () => {
       )
     ) {
       // Mobile: Open phone dial pad
-      window.location.href = `tel:9876543210`;
+      window.location.href = `tel:8464914395`;
     } else {
       // Desktop: Copy phone number to clipboard
-      navigator.clipboard.writeText("9876543210");
+      navigator.clipboard.writeText("8464914395");
       window.alert("Phone number copied");
     }
   };
@@ -32,7 +32,7 @@ const Header = () => {
           onClick={handlePhoneClick}
         >
           <Phone />
-          <span>9876543210</span>
+          <span>8464914395</span>
         </div>
         <div className="flex justify-center items-center gap-4 cursor-pointer">
           <Facebook
@@ -44,18 +44,18 @@ const Header = () => {
           <MessageCirclePlus
             onClick={() =>
               handleSocialClick(
-                "https://api.whatsapp.com/send?phone=9876543210"
+                "https://api.whatsapp.com/send?phone=8464914395"
               )
             }
           />
         </div>
       </section>
-      <div className="shadow-md shadow-blue-500 p-5">
+      <div className="shadow-md shadow-blue-500 p-5 flex justify-center items-center">
         <Image
           src="/mobileLogo.png"
           width={140}
           height={104}
-          className="m-0 rounded-xl align-center"
+          className="m-0 rounded-xl align-middle"
           sizes="300px"
           alt="Logo"
           priority={true}
