@@ -69,4 +69,7 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+   .footer_items {
+    @apply mb-3 font-medium hover:scale-105 select-none;
+  }
 }

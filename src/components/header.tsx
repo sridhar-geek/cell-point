@@ -34,6 +34,16 @@ const Header = () => {
           <Phone />
           <span>8464914395</span>
         </div>
+        <Image
+          src="/mobileLogo.png"
+          width={100}
+          height={24}
+          className="m-0 rounded-xl align-middle"
+          sizes="300px"
+          alt="Logo"
+          priority={true}
+          title="Header Logo"
+        />
         <div className="flex justify-center items-center gap-4 cursor-pointer">
           <Facebook
             onClick={() => handleSocialClick("https://www.facebook.com/")}
@@ -50,18 +60,7 @@ const Header = () => {
           />
         </div>
       </section>
-      <div className="shadow-md shadow-blue-500 p-5 flex justify-center items-center">
-        <Image
-          src="/mobileLogo.png"
-          width={140}
-          height={104}
-          className="m-0 rounded-xl align-middle"
-          sizes="300px"
-          alt="Logo"
-          priority={true}
-          title="Header Logo"
-        />
-      </div>
+      {/* <div className="shadow-md shadow-blue-500 p-5 flex justify-center items-center"></div> */}
     </header>
   );
 };

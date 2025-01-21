@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import CarouselBanner from "@/components/shadcnBanner";
+import Footer from '@/components/Footer'
 
 const bannerImageLinks = [
   "/realme phone.jpg",
@@ -14,6 +15,7 @@ const HomePage = () => {
       <Header />
       <br />
       <CarouselBanner imageLinks={bannerImageLinks} />
+      <Footer />
     </main>
   );
 };
