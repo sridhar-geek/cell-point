@@ -12,23 +12,25 @@ import { Control } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
-import { FieldValues, ControllerRenderProps } from "react-hook-form";
+import { FieldValues, ControllerRenderProps, Path } from "react-hook-form";
 
-
-interface CustomProps {
-  control: Control<FieldValues>;
+interface CustomProps<T extends FieldValues> {
+  control: Control<T>;
   label: string;
-  name: string;
+  name: Path<T>;
   type: string;
-  data?: { label: string; value: string }[];
   placeholder: string;
   showPassword?: boolean;
   setShowPassword?: Dispatch<SetStateAction<boolean>>;
 }
 
-
-// Render the input feild based on the condition
-const RenderInput = ({ field, props }: { field: ControllerRenderProps<FeildValues, string>; props: CustomProps }) => {
+const RenderInput = <T extends FieldValues>({
+  field,
+  props,
+}: {
+  field: ControllerRenderProps<T>;
+  props: CustomProps<T>;
+}) => {
   switch (props.type) {
     case "password":
       return (
@@ -73,9 +75,7 @@ const RenderInput = ({ field, props }: { field: ControllerRenderProps<FeildValue
   }
 };
 
-
-//  Main Feild which is render
-const FormFeild = (props: CustomProps) => {
+const FormFeild = <T extends FieldValues>(props: CustomProps<T>) => {
   const { control, label, name } = props;
   return (
     <FormField

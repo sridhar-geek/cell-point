@@ -2,8 +2,12 @@
 import React from "react";
 import { Facebook, Instagram, MessageCirclePlus, Phone } from "lucide-react";
 import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
+  const { toast } = useToast();
+
+  // when phone number is clicked
   const handlePhoneClick = () => {
     if (
       typeof window !== "undefined" &&
@@ -16,10 +20,15 @@ const Header = () => {
     } else {
       // Desktop: Copy phone number to clipboard
       navigator.clipboard.writeText("8464914395");
-      window.alert("Phone number copied");
+      toast({
+        title: "Phone Number Copied",
+        description: "Contact for more help  >>> 8464914395",
+        variant: "default",
+      });
     }
   };
 
+  //  when social apps are clicked
   const handleSocialClick = (url: string) => {
     window.open(url, "_blank");
   };
@@ -27,6 +36,7 @@ const Header = () => {
   return (
     <header>
       <section className="bg-active flex justify-between items-center md:gap-4 p-4 ">
+        {/* phone number */}
         <div
           className="flex justify-center items-center gap-1 cursor-pointer"
           onClick={handlePhoneClick}
@@ -34,6 +44,7 @@ const Header = () => {
           <Phone />
           <span>8464914395</span>
         </div>
+        {/* Logo */}
         <Image
           src="/mobileLogo.png"
           width={100}
@@ -44,6 +55,7 @@ const Header = () => {
           priority={true}
           title="Header Logo"
         />
+        {/* Social links */}
         <div className="flex justify-center items-center gap-4 cursor-pointer">
           <Facebook
             onClick={() => handleSocialClick("https://www.facebook.com/")}

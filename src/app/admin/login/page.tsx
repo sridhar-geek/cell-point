@@ -18,9 +18,8 @@ import { useToast } from "@/hooks/use-toast";
 import Spinner from "@/components/Spinner";
 import { useTransition } from "react";
 import { useState } from "react";
-// import { useAuth } from "@/context/AuthProvider";
-// import { jwtDecode } from "jwt-decode";
-// import { Payload } from "@/middleware";
+import { supabase } from "@/lib/supabaseClient";
+
 // Zod form Schema
 const formSchema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email is required"),
@@ -30,7 +29,6 @@ const formSchema = z.object({
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  // const { setAuth } = useAuth();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -60,49 +58,51 @@ export default function LoginPage() {
   ];
 
   // Handler function -->
-  // async function onSubmit(values: z.infer<typeof formSchema>) {
-  //   startTransition(async () => {
-  //     try {
-  //       const response = await axiosInstance({
-  //         method: "POST",
-  //         url: "/auth/login",
-  //         data: values,
-  //       });
-  //       if (response.status === 200) {
-  //         const decodedToken: Payload = jwtDecode(response.data.accessToken);
-  //         setAuth({
-  //           user: { role: decodedToken.role, id: decodedToken.sub },
-  //           accessToken: response.data.accessToken,
-  //         });
-  //         toast({
-  //           title: "Login Successful",
-  //           description: `Welcome ${response.data.user.userName}`,
-  //           variant: "default",
-  //         });
-  //         router.push("/chat_room");
-  //       } else {
-  //         const errorData = response.data;
-  //         throw new Error(errorData.message || "Something went wrong");
-  //       }
-  //     } catch (error: unknown) {
-  //       const errorMessage =
-  //         (error as { response?: { data?: { message?: string } } }).response
-  //           ?.data?.message || (error as Error).message;
-  //       toast({
-  //         title: "Login Failed",
-  //         description: errorMessage,
-  //         variant: "destructive",
-  //       });
-  //     }
-  //   });
-  // }
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const email = values.email;
+    const password = values.password;
 
-  async function onSubmit(values: z.infer<typeof formSchema>){
-    console.log(values);
+    startTransition(async () => {
+      try {
+        const response = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        console.log("this is response", response);
+        if (response.data.user) {
+          // Successful login
+          toast({
+            title: "Login Successful",
+            description: `Welcome User`,
+            variant: "default",
+          });
+          router.push("/admin/dashboard");
+        } else {
+          // Login failed
+          toast({
+            title: "Login Failed",
+            description: response.error?.message || "Invalid login credentials",
+            variant: "destructive",
+          });
+        }
+      } catch (error: unknown) {
+        // Handle unexpected errors
+        const errorMessage =
+          (error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message || (error as Error).message;
+
+        toast({
+          title: "Login Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+    });
   }
 
   return (
     <div className="h-screen flex items-center justify-center">
+      {/* Card to hold login form */}
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
@@ -112,15 +112,13 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            {/* Login Form */}
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               {inputFormFeilds.map((inputFeild) => (
                 <FormFeild
                   key={inputFeild.label}
                   control={form.control}
-                  name={inputFeild.name}
+                  name={inputFeild.name as "email" | "password"}
                   label={inputFeild.label}
                   placeholder={inputFeild.placeholder}
                   type={inputFeild.type}

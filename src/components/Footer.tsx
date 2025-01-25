@@ -37,6 +37,7 @@ const Footer = () => {
       {/* down copyright */}
       <div className="border border-gray-500 border-x-2"></div>
       <div className="text-center mt-3">
+        {/* Link to login page */}
         <Link  href={'/admin/login'}>CopyRights © Divya Cell Point 2025</Link>{" "}
       </div>
     </footer>
