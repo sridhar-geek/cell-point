@@ -1,6 +1,8 @@
 import Header from "@/components/header";
 import CarouselBanner from "@/components/shadcnBanner";
-import Footer from '@/components/Footer'
+import Footer from "@/components/footer";
+import PriroritySection from "@/components/prirority";
+import NonPriroritySection from "@/components/nonPriroritySection";
 
 const bannerImageLinks = [
   "/realme phone.jpg",
@@ -14,7 +16,11 @@ const HomePage = () => {
     <main>
       <Header />
       <br />
-      <CarouselBanner imageLinks={bannerImageLinks} />
+      <div className="mx-3 md:mx-8 lg:mx-10">
+        <CarouselBanner imageLinks={bannerImageLinks} />
+        <PriroritySection />
+        <NonPriroritySection />
+      </div>
       <Footer />
     </main>
   );

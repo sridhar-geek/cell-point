@@ -13,9 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import FormFeild from "@/components/FormFeild";
+import FormFeild from "@/components/formFeild";
 import { useToast } from "@/hooks/use-toast";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import { useTransition } from "react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
