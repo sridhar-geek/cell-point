@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { MapPin,Phone } from 'lucide-react';
-
+import { MapPin, Phone } from "lucide-react";
+import { phoneNumber } from "@/lib/data";
 
 const Footer = () => {
   return (
@@ -17,7 +17,7 @@ const Footer = () => {
           <div className="footer_items">Combo Replacement</div>
           <div className="footer_items">Water Services</div>
           <div className="footer_items">Keypad Replacement </div>
-      </div>
+        </div>
         {/* box 3 */}
         <div>
           <h4 className="footer_items font-bold">Contact Us</h4>
@@ -28,9 +28,9 @@ const Footer = () => {
           <div className="footer_items flex items-center gap-2">
             <Phone />
             <div className="flex flex-col">
-              <span> +91 98765 43210</span>
+              <span>{phoneNumber}</span>
               {/* <span>+91 99999 99999</span>  Add extra number */}
-             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -38,7 +38,9 @@ const Footer = () => {
       <div className="border border-gray-500 border-x-2"></div>
       <div className="text-center mt-3">
         {/* Link to login page */}
-        <Link  href={'/admin/login'}>CopyRights © Divya Cell Point 2025</Link>{" "}
+        <Link href={"/admin/login"}>
+          CopyRights © Divya Cell Point 2025
+        </Link>{" "}
       </div>
     </footer>
   );

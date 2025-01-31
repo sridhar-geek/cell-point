@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
-import { Facebook, Instagram, MessageCirclePlus, Phone } from "lucide-react";
+import { Facebook, Instagram, Phone } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
+import { phoneNumber } from "@/lib/data";
 
 const Header = () => {
   const { toast } = useToast();
@@ -16,13 +17,13 @@ const Header = () => {
       )
     ) {
       // Mobile: Open phone dial pad
-      window.location.href = `tel:8464914395`;
+      window.location.href = `tel:${phoneNumber}`;
     } else {
       // Desktop: Copy phone number to clipboard
-      navigator.clipboard.writeText("8464914395");
+      navigator.clipboard.writeText(phoneNumber);
       toast({
         title: "Phone Number Copied",
-        description: "Contact for more help  >>> 8464914395",
+        description: `Contact for more help  >>> ${phoneNumber}`,
         variant: "default",
       });
     }
@@ -42,7 +43,7 @@ const Header = () => {
           onClick={handlePhoneClick}
         >
           <Phone />
-          <span>8464914395</span>
+          <span>{phoneNumber}</span>
         </div>
         {/* Logo */}
         <Image
@@ -63,10 +64,14 @@ const Header = () => {
           <Instagram
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
-          <MessageCirclePlus
+          <Image
+            src="/whatsApp.svg"
+            alt="Your SVG description"
+            width={32}
+            height={32}
             onClick={() =>
               handleSocialClick(
-                "https://api.whatsapp.com/send?phone=8464914395"
+                `https://api.whatsapp.com/send?phone=${phoneNumber}`
               )
             }
           />

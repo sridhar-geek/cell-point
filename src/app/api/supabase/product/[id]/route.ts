@@ -1,29 +1,31 @@
 // app/api/table-name/[id]/route.js
 import { supabase } from "@/lib/supabaseClient";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req, { params }) {
-  const { id } = params;
-  const body = await req.json();
-  const { data, error } = await supabase
-    .from("Product")
-    .update(body)
-    .eq("id", id);
-  if (error)
-    return new Response(JSON.stringify({ error: error.message }), {
+export async function GET(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params; 
+
+  try {
+    const productResponse = await supabase
+      .from("Product")
+      .select("*", { count: "exact" })
+      .eq("id", id);
+    if (productResponse.error) {
+      throw new Error(productResponse.error.message);
+    }
+
+    return new NextResponse(JSON.stringify(productResponse.data), {
+      status: 200,
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      (error as { response?: { data?: { message?: string } } }).response?.data
+        ?.message || (error as Error).message;
+    return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
     });
-  return new Response(JSON.stringify(data), { status: 200 });
-}
-
-export async function DELETE(req, { params }) {
-  const { id } = params;
-  const { data, error } = await supabase
-    .from("Product")
-    .delete()
-    .eq("id", id);
-  if (error)
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-    });
-  return new Response(JSON.stringify(data), { status: 200 });
+  }
 }
