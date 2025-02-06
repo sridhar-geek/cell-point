@@ -5,7 +5,6 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const priority = searchParams.get("priority");
-    console.log({ priority });
 
     let query = supabase.from("Category").select(`*`);
 
@@ -13,7 +12,6 @@ export async function GET(req: NextRequest) {
       query = query.eq("priority", priority === "true");
     }
     const { data, error } = await query;
-    console.log(data, "data");
     if (error) {
       throw new Error(error.message);
     }

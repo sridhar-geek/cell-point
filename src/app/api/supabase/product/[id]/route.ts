@@ -1,18 +1,16 @@
-// app/api/table-name/[id]/route.js
 import { supabase } from "@/lib/supabaseClient";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params; 
+export async function GET(req: NextRequest) {
+  const url = req.url;
+  const id = url.split("/").pop();
 
   try {
     const productResponse = await supabase
       .from("Product")
       .select("*", { count: "exact" })
       .eq("id", id);
+
     if (productResponse.error) {
       throw new Error(productResponse.error.message);
     }

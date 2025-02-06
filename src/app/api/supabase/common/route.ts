@@ -4,13 +4,14 @@ import { NextResponse, NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const priority = searchParams.get("priority");
-    let query = supabase.from("Product").select(`*, Category!inner(priority)`);
-
-    if (priority !== null) {
-      query = query.eq("Category.priority", priority === "true");
+    const givenColumn = searchParams.get("column");
+    let query;
+    if (givenColumn !== null) {
+      query = supabase.from("Common").select(givenColumn);
+    } else {
+      query = supabase.from("Common").select("*");
     }
-    const { data, error } = await query ;
+    const { data, error } = await query;
     if (error) {
       throw new Error(error.message);
     }
@@ -31,11 +32,6 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   try {
     const response = await supabase.from("Category").insert([body]);
-
-    if (response.error) {
-      throw new Error(response.error.message);
-    }
-
     return new Response(JSON.stringify(response.data), { status: 201 });
   } catch (error: unknown) {
     const errorMessage =

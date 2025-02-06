@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Facebook, Instagram, Phone } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +7,30 @@ import { phoneNumber } from "@/lib/data";
 
 const Header = () => {
   const { toast } = useToast();
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY) {
+        // Scrolling down → hide header
+        setShowHeader(false);
+      } else {
+        // Scrolling up → show header
+        setShowHeader(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
 
   // when phone number is clicked
   const handlePhoneClick = () => {
@@ -35,7 +59,11 @@ const Header = () => {
   };
 
   return (
-    <header>
+    <header
+      className={`fixed top-0 left-0 w-full bg-white shadow-md transition-transform duration-300 z-50 ${
+        showHeader ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <section className="bg-active flex justify-between items-center md:gap-4 p-4 ">
         {/* phone number */}
         <div
@@ -47,14 +75,14 @@ const Header = () => {
         </div>
         {/* Logo */}
         <Image
-          src="/mobileLogo.png"
+          src="/logo.png"
           width={100}
-          height={24}
-          className="m-0 rounded-xl align-middle"
+          height={100}
+          className="m-0 rounded-xl align-middle cursor-pointer"
           sizes="300px"
           alt="Logo"
           priority={true}
-          title="Header Logo"
+          title="Divya Cell Point"
         />
         {/* Social links */}
         <div className="flex justify-center items-center gap-4 cursor-pointer">

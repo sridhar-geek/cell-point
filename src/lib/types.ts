@@ -26,9 +26,15 @@ export type productsProp = {
 };
 
 export type categoryProp = {
-  id: "d46bf650-726a-4fbf-bd70-6d005941fb82";
-  created_at: "2025-01-25T09:38:01.015228+00:00";
-  name: "Ear Phones";
-  icon: null;
-  priority: false;
+  id: string;
+  created_at: string;
+  name: string;
+  icon: string | null;
+  priority: boolean;
+};
+
+export type bannerImagesProp = {
+  bannerImages: {
+    photos: string[];
+  };
 };

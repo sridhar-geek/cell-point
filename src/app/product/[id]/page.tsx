@@ -1,43 +1,58 @@
 "use client";
 import CarouselBanner from "@/components/shadcnBanner";
 import { productsProp } from "@/lib/types";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, Share2 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { phoneNumber } from "@/lib/data";
+import { usePersistentSWR } from "@/lib/usePersistentSwr";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductsInfo = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
-  const [product, setProduct] = useState<productsProp | null>(null);
-  const params = useParams(); 
+  const params = useParams();
   const { id } = params as { id: string };
   const [url, setUrl] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = usePersistentSWR<productsProp[]>(
+    `singleProduct/${id}`,
+    `/api/supabase/product/${id}`
+  );
 
   useEffect(() => {
+    setHydrated(true);
     setUrl(window.location.href);
-    if (!id) return;
-    startTransition(async () => {
-      try {
-        const response = await fetch(`/api/supabase/product/${id}`, {
-          method: "GET",
-        });
+  }, []);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
+  if (!hydrated) {
+    return (
+      <div className="flex-col">
+        <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
+        <div className="space-y-2">
+          <Skeleton className="h-2 md:h-4 w-[125px] md:w-[250px]" />
+          <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
+          <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
+        </div>
+      </div>
+    );
+  }
 
-        const product = await response.json();
-        console.log("Products of the application", product);
-        setProduct(product[0]);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    });
-  }, [id]);
+  if (error) {
+    // Give Proper Error Message
+    return (
+      <div className="text-red-800">
+        Error Occoured while getting New Lanches.....
+      </div>
+    );
+  }
 
   const handleShare = async () => {
     try {
@@ -45,7 +60,7 @@ const ProductsInfo = () => {
       if (navigator.share) {
         await navigator.share({
           title: `Check out this cool ${
-            product ? product.name : "Amazing gadget"
+            product ? product[0].name : "Amazing gadget"
           } from Divya Cell Point `,
           url,
         });
@@ -54,7 +69,7 @@ const ProductsInfo = () => {
         toast({
           title: "Link Copied",
           description: `Check out this cool ${
-            product ? product.name : "Amazing gadget"
+            product ? product[0].name : "Amazing gadget"
           }  from Divya Cell Point `,
           variant: "default",
         });
@@ -96,8 +111,15 @@ const ProductsInfo = () => {
   };
   return (
     <div>
-      {isPending ? (
-        <span>Loading.....</span>
+      {isLoading ? (
+        <div className="flex-col">
+          <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
+          <div className="space-y-2">
+            <Skeleton className="h-2 md:h-4 w-[125px] md:w-[250px]" />
+            <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
+            <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
+          </div>
+        </div>
       ) : (
         <div>
           {product ? (
@@ -109,22 +131,22 @@ const ProductsInfo = () => {
                 className="cursor-pointer m-6"
                 size={"44px"}
               />
-              <CarouselBanner imageLinks={product.photos?.photos || []} />
+              <CarouselBanner imageLinks={product[0].photos?.photos || []} />
               <div className="mx-3 md:mx-8 lg:mx-10 flex-col gap-20">
                 <div className="flex-col justify-center items-center text-center">
-                  <h1 className="text-xl ">{product.name}</h1>
-                  <h3 className="text-xs">{product.categoryName}</h3>
+                  <h1 className="text-xl ">{product[0].name}</h1>
+                  <h3 className="text-xs">{product[0].categoryName}</h3>
                 </div>
                 <div className="flex  items-center">
                   <h2 className="text-xl p-2 ">Price: </h2>
-                  <div className="line-through pr-3">₹ {product.price}</div>
-                  <div>₹ {product.offerPrice}</div>
+                  <div className="line-through pr-3">₹ {product[0].price}</div>
+                  <div>₹ {product[0].offerPrice}</div>
                 </div>
                 <div>
                   <h2>Ratings : </h2>
                 </div>
                 <span className="text-xl">Description</span>
-                <div className="indent-4">{product.description}</div>
+                <div className="indent-4">{product[0].description}</div>
               </div>
               <div className="w-full mt-10">
                 <Button className="w-1/2" onClick={handleShare}>
