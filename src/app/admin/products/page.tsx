@@ -87,11 +87,7 @@ const Products = () => {
           (filteredproducts.length === 0 ? (
             <div className="flex justify-center items-center max-h-full">
               {/* No Products jsx */}
-              <p className="font-semibold">
-                {" "}
-                😟No products found with{" "}
-                <span className="text-blue-700">{searchTerm}</span>
-              </p>
+              <p className="font-semibold"> 😟No products found</p>
             </div>
           ) : (
             filteredproducts.map((product) => (

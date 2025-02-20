@@ -13,7 +13,8 @@ import {
 import { Trash2 } from "lucide-react";
 import { mutate } from "swr";
 import { errorMsg } from "@/lib/common";
-import { productsProp } from "@/lib/types";
+import Spinner from "./spinner";
+// import { productsProp } from "@/lib/types";
 
 type DeleteDialogProps = {
   id: string;
@@ -32,6 +33,7 @@ const DeleteDialog = ({
 }: DeleteDialogProps) => {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const data = localStorage.getItem("supabaseSession");
   const session = data ? JSON.parse(data) : null;
@@ -39,8 +41,12 @@ const DeleteDialog = ({
   // based on the product, change the url and swr key
   const handleDelete = async (event: React.MouseEvent) => {
     event.stopPropagation();
+    setIsLoading(true);
     try {
-      const response = await fetch(`/api/supabase/product/${id}`, {
+      const url = product
+        ? `/api/supabase/product/${id}`
+        : `/api/supabase/category/${id}`;
+      const response = await fetch(url, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -54,34 +60,42 @@ const DeleteDialog = ({
 
       // Show success toast
       toast({
-        title: "Product Deleted",
-        description: `${productName} has been deleted successfully.`,
+        title: product
+          ? `${productName} is deleted`
+          : `${categoryName} is deleted`,
+        description: product
+          ? `${productName} has been deleted successfully.`
+          : `${categoryName} has been deleted successfully.`,
       });
 
       // Optimistically update the SWR cache
-      mutate(
-        "allProducts", // SWR key for the products data
-        async (currentData: productsProp[]) => {
-          // Filter out the deleted product from the current data
-          return currentData.filter(
-            (product: productsProp) => product.id !== id
-          );
-        },
-        false // Do not revalidate immediately (optimistic update)
-      );
+      // mutate(
+      //   "allProducts", // SWR key for the products data
+      //   async (currentData: productsProp[]) => {
+      //     // Filter out the deleted product from the current data
+      //     return currentData.filter(
+      //       (product: productsProp) => product.id !== id
+      //     );
+      //   },
+      //   false // Do not revalidate immediately (optimistic update)
+      // );
 
       // Revalidate the data to ensure it's up-to-date
-      mutate("allProducts");
+      mutate(product ? "allProducts" : "allcategories");
 
+      setIsLoading(false);
       // Close dialog after deletion
       setIsOpen(false);
       onClose();
     } catch (error: unknown) {
       toast({
         title: "Error",
-        description: `An error occurred while deleting the ${productName} .`,
+        description: `An error occurred while deleting the ${
+          product ? productName : categoryName
+        } .`,
         variant: "destructive",
       });
+      setIsLoading(false);
       // Close dialog after deletion
       setIsOpen(false);
       onClose();
@@ -132,24 +146,30 @@ const DeleteDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="w-full flex justify-around items-center">
-          <Button
-            className="bg-red-600 hover:bg-red-900"
-            onClick={handleDelete}
-          >
-            Yes
+        {isLoading ? (
+          <Button>
+            <Spinner />
           </Button>
-          <Button
-            className="bg-green-500 hover:bg-green-900"
-            onClick={(event) => {
-              event.stopPropagation();
-              setIsOpen(false);
-              onClose();
-            }}
-          >
-            No
-          </Button>
-        </div>
+        ) : (
+          <div className="w-full flex justify-around items-center">
+            <Button
+              className="bg-red-600 hover:bg-red-900"
+              onClick={handleDelete}
+            >
+              Yes
+            </Button>
+            <Button
+              className="bg-green-500 hover:bg-green-900"
+              onClick={(event) => {
+                event.stopPropagation();
+                setIsOpen(false);
+                onClose();
+              }}
+            >
+              No
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

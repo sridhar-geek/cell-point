@@ -6,7 +6,7 @@ import { PencilLine, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import EditDialog from "@/components/EditDialog";
 import DeleteDialog from "@/components/DeleteDialog";
-import {CardSkeleton} from "@/components/skeleton";
+import { CardSkeleton } from "@/components/skeleton";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { categoryProp, productsProp } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,9 @@ const Categories = () => {
   const [hydrated, setHydrated] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isEditDialog, setIsEditDialog] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<categoryProp | null>(
+    null
+  );
   const [isAddDialog, setIsAddDialog] = useState(false);
   const [visibleCategories, setVisibleCategories] = useState<{
     [key: string]: boolean;
@@ -103,20 +105,12 @@ const Categories = () => {
               <div className="flex gap-2 items-center">
                 <h3 className="text-2xl font-bold m-2">{category.name}</h3>
                 <button
-                  onClick={() => setIsEditDialog(true)}
+                  onClick={() => setSelectedCategory(category)} // Set the selected category
                   className="text-blue-600"
                 >
                   <PencilLine />
                 </button>
               </div>
-              <EditDialog
-                add={false}
-                name={category.name}
-                onClose={() => setIsEditDialog(false)}
-                priority={category.priority}
-                open={isEditDialog}
-                title="Edit Category"
-              />
               <div className="flex items-center gap-7">
                 {/* Delete dialog */}
                 <DeleteDialog
@@ -160,6 +154,17 @@ const Categories = () => {
             </div>
           </div>
         ))}
+      {selectedCategory && (
+        <EditDialog
+          add={false}
+          id={selectedCategory.id}
+          name={selectedCategory.name}
+          onClose={() => setSelectedCategory(null)} // Reset selected category on close
+          priority={selectedCategory.priority}
+          open={!!selectedCategory}
+          title="Edit Category"
+        />
+      )}
     </div>
   );
 };

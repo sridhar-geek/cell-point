@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import {
   Dialog,
   DialogContent,
@@ -13,9 +12,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
-import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { useState } from "react";
 import FormFeild from "./formFeild";
+import { useToast } from "@/hooks/use-toast";
+import { mutate } from "swr";
+import { errorMsg } from "@/lib/common";
+import Spinner from "./spinner";
 
 const EditDialog = ({
   open,
@@ -34,7 +36,8 @@ const EditDialog = ({
   priority: boolean;
   onClose: () => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   // Zod form Schema
   const formSchema = z.object({
@@ -55,7 +58,7 @@ const EditDialog = ({
   const inputFormFeilds = [
     {
       name: "name",
-      label: "CatgoryName ",
+      label: "Category Name",
       type: "text",
       placeholder: "category name",
     },
@@ -63,32 +66,59 @@ const EditDialog = ({
       name: "priority",
       label: "Priority",
       type: "checkbox",
-      placeholder: "priority"
+      placeholder: "priority",
     },
   ];
+  const data = localStorage.getItem("supabaseSession");
+  const session = data ? JSON.parse(data) : null;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // const { data, error, isLoading, mutate } = usePersistentSWR(
-    //   `editCategory${id}`,
-    //   `/api/supabase/category/${id}`
-    // );
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     try {
-      console.log(values);
-      setIsOpen(false)
+      const url = add
+        ? "/api/supabase/category"
+        : `/api/supabase/category/${id}`;
+      const method = add ? "POST" : "PATCH";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      // Revalidate the data to ensure it's up-to-date
+      mutate("allcategories");
+      setIsLoading(false);
       onClose();
-    } catch (error) {
-      console.log(error);
+      // Show success toast
+      toast({
+        title: add ? "Category added" : "Category Modified",
+        description: add
+          ? `New Category added to your list`
+          : ` Category ${name} is modified Sucessfully`,
+      });
+    } catch (error: unknown) {
+      setIsLoading(false);
+      onClose();
+      return errorMsg(error);
     }
   }
+
   return (
-    <Dialog open={open} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] rounded-md">
-        <DialogHeader onClick={(event) => event.stopPropagation()}>
+        <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             {add
               ? "Create New Category."
-              : `Your about to change the category Name of the ${name}.`}
+              : `You're about to change the category name of ${name}.`}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -103,7 +133,9 @@ const EditDialog = ({
                 type={inputFeild.type}
               />
             ))}
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? <Spinner /> : "Submit"}
+            </Button>
           </form>
         </Form>
       </DialogContent>
