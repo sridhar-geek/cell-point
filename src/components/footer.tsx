@@ -38,7 +38,7 @@ const Footer = () => {
       <div className="border border-gray-500 border-x-2"></div>
       <div className="text-center mt-3">
         {/* Link to login page */}
-        <Link href={"/admin/login"}>
+        <Link href={"/login"}>
           CopyRights © Divya Cell Point 2025
         </Link>{" "}
       </div>

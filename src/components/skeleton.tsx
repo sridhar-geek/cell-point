@@ -2,7 +2,7 @@ import React from "react";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
 
-const CardSkeleton = ({ className }: { className?: string }) => {
+export const CardSkeleton = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
@@ -17,6 +17,20 @@ const CardSkeleton = ({ className }: { className?: string }) => {
   );
 };
 
+export const CategorySkeleton = ({ className }: { className?: string }) => {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-3 overflow-x-auto snap-x snap-mandatory",
+        className
+      )}
+    >
+      {Array.from({ length: 5 }).map((_, index) => (
+        <Skeleton key={index} className="h-2 md:h-4 w-[90px] md:w-[200px]" />
+      ))}
+    </div>
+  );
+};
 const LoadingSkeleton = () => {
   return (
     <div className="flex flex-col space-y-3 bg-gray-400 p-2 rounded-lg">
@@ -28,5 +42,3 @@ const LoadingSkeleton = () => {
     </div>
   );
 };
-
-export default CardSkeleton;

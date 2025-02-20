@@ -7,12 +7,12 @@ export async function GET(req: NextRequest) {
 
   try {
     const productResponse = await supabase
-      .from("Product")
+      .from("Category")
       .select("*", { count: "exact" })
       .eq("id", id);
     if (productResponse.error) throw new Error(productResponse.error.message);
     if (productResponse.data.length < 1)
-      throw new Error(JSON.stringify("No Product found."));
+      throw new Error(JSON.stringify("No Category found."));
 
     return new NextResponse(JSON.stringify(productResponse.data), {
       status: 200,
@@ -31,8 +31,6 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const requestData = await req.json();
-    console.log("id", id, "data", requestData);
-
     if (!requestData || Object.keys(requestData).length === 0) {
       return new NextResponse(
         JSON.stringify({ error: "No data provided for update" }),
@@ -40,27 +38,19 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    // Ensure `photos` matches Supabase JSONB format
-    if (requestData.photos && !requestData.photos.photos) {
-      requestData.photos = { photos: requestData.photos };
-    }
-
     const supabase = getSupabaseClient(token);
 
     // Perform update operation
     const { data, error } = await supabase
-      .from("Product")
+      .from("Category")
       .update(requestData)
       .eq("id", id)
-      .select(); // 👈 Ensure Supabase returns the updated row
-
-    console.log("Supabase Response:", { data, error });
-
+      .select();
     if (error) {
       throw new Error(error.message);
     }
 
-    if (data=== null || data.length === 0) {
+    if (data === null || data.length === 0) {
       return new NextResponse(
         JSON.stringify({ error: "No matching product found." }),
         { status: 404 }
@@ -79,23 +69,19 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-
 export async function DELETE(req: NextRequest) {
-  console.log("request came to delete request");
   const { id, token } = getTokenandId(req);
-  console.log("id", id , "token", token);
   if (!token)
     return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
     });
   const supabase = getSupabaseClient(token);
   try {
-    const response = await supabase.from("Product").delete().eq("id", id);
-    console.log("response", response);
+    const response = await supabase.from("Category").delete().eq("id", id);
     if (response.error) {
       throw new Error(response.error.message);
     } else {
-      return new NextResponse(JSON.stringify("Product delete Successfully"), {
+      return new NextResponse(JSON.stringify("Category delete Successfully"), {
         status: 200,
       });
     }

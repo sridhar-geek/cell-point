@@ -38,3 +38,28 @@ export type bannerImagesProp = {
     photos: string[];
   };
 };
+
+export type Navigation = {
+  name: string;
+  routeName: string;
+  route: string;
+  icon: React.JSX.Element;
+};
+
+export type productCardProp = {
+  product: {
+    available: boolean;
+    categoryName: string;
+    created_at: string;
+    description: string;
+    id: string;
+    name: string;
+    offerPrice: number;
+    photos: {
+      photos: string[];
+    };
+    price: number;
+    updated_at: string;
+  };
+  admin: boolean;
+};

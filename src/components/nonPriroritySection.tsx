@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import RenderCategories from "./renderCategories";
 import { productsProp, categoryProp } from "@/lib/types";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
-import CardSkeleton from "./skeleton";
-
+import { CategorySkeleton, CardSkeleton } from "./skeleton";
+// import { products, categories } from "@/lib/data";
+import { groupByCategory } from "@/lib/common";
 const NonPrioritySection = () => {
   const [localCategory, setLocalCategory] = useState("All");
   const [hydrated, setHydrated] = useState(false);
@@ -27,39 +28,11 @@ const NonPrioritySection = () => {
     "/api/supabase/category?priority=false"
   );
 
-  if (!hydrated) {
+  if (!hydrated || categoriesLoading) {
     return (
-      <div>
-        <h3 className="text-2xl font-bold m-2">
-          Categories Loading <span className="animate-bounce">....</span>
-        </h3>
-        <CardSkeleton />
-      </div>
+      <CategorySkeleton />
     );
   }
-
-  // Function to group products by category
-  const groupByCategory = (items: productsProp[], localCategory: string) => {
-    const grouped = items.reduce<Record<string, productsProp[]>>(
-      (acc, product) => {
-        const category = product.categoryName || "Uncategorized";
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-        acc[category].push(product);
-        return acc;
-      },
-      {}
-    );
-    if (localCategory === "All") {
-      return grouped;
-    }
-
-    // Return only the selected category
-    return localCategory in grouped
-      ? { [localCategory]: grouped[localCategory] }
-      : {};
-  };
 
   const groupedProducts = data ? groupByCategory(data, localCategory) : {};
 
@@ -74,14 +47,7 @@ const NonPrioritySection = () => {
 
   return (
     <div className="mb-10">
-      {categoriesLoading ? (
-        <div>
-          <h3 className="text-2xl font-bold m-2">
-            Categories Loading <span className="animate-bounce">....</span>
-          </h3>
-          <CardSkeleton />
-        </div>
-      ) : categoryError ? (
+      {categoryError ? (
         <div className="text-red-800 flex justify-center items-center h-44">
           Error Occoured while getting Categories.....
         </div>
@@ -90,7 +56,7 @@ const NonPrioritySection = () => {
           <button
             onClick={() => setLocalCategory("All")}
             className={`${
-              localCategory === "All" ? "bg-btnColor-light" : "bg-white"
+              localCategory === "All" ? "bg-active" : "bg-white"
             } rounded-md px-4 py-1 flex-nowrap`}
           >
             All
@@ -99,9 +65,7 @@ const NonPrioritySection = () => {
             <div
               key={category.id}
               className={`${
-                localCategory === category.name
-                  ? "bg-btnColor-light"
-                  : "bg-white"
+                localCategory === category.name ? "bg-active" : "bg-white"
               } rounded-md px-4 py-1 flex-nowrap`}
             >
               <button
@@ -115,7 +79,14 @@ const NonPrioritySection = () => {
         </div>
       )}
       {isLoading ? (
-        <span>Products are loading</span>
+        Array.from({ length: 3 }).map((_, index) => (
+          <div key={index}>
+            <h3 className="text-2xl font-bold m-2">
+              Categories Loading <span className="animate-bounce">....</span>
+            </h3>
+            <CardSkeleton />
+          </div>
+        ))
       ) : (
         <RenderCategories groupedProducts={groupedProducts} />
       )}

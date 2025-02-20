@@ -254,34 +254,43 @@ export const newData = [
   },
 ];
 
-export const product = {
-  available: true,
-  categoryName: "New Launches",
-  created_at: "2025-01-25T10:24:12.90012+00:00",
-  description: "somthingnaeke",
-  id: "2c5abd3c-9300-4899-aa8c-b714c6cced97",
-  name: "Samsung s24",
-  offerPrice: 87745,
-  photos: {
-    photos: [
-      "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/realme%20phone2.jpg",
-      "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/realme%20phone2.jpg",
-      "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/realme%20phone.jpg",
-      "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/samsung%20image.jpeg",
-    ],
+export const product = [
+  {
+    available: true,
+    categoryName: "New Launches",
+    created_at: "2025-01-25T10:24:12.90012+00:00",
+    description: "somthingnaeke",
+    id: "2c5abd3c-9300-4899-aa8c-b714c6cced97",
+    name: "Samsung s24",
+    offerPrice: 87745,
+    photos: {
+      photos: [
+        "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/realme%20phone2.jpg",
+        "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/realme%20phone2.jpg",
+        "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/realme%20phone.jpg",
+        "https://tieigchmmwhwonipivot.supabase.co/storage/v1/object/public/images%20bucket/samsung%20image.jpeg",
+      ],
+    },
+    price: 78995,
+    updated_at: "2025-01-25T10:24:12.90012+00:00",
   },
-  price: 78995,
-  updated_at: "2025-01-25T10:24:12.90012+00:00",
-};
+];
 
-export const category = {
-  id: "d46bf650-726a-4fbf-bd70-6d005941fb82",
-  created_at: "2025-01-25T09:38:01.015228+00:00",
-  name: "Ear Phones",
-  icon: null,
-  priority: false,
-};
-
+export const categories = [
+  {
+    id: "d46bf650-726a-4fbf-bd70-6d005941fb82",
+    created_at: "2025-01-25T09:38:01.015228+00:00",
+    name: "Ear Phones",
+    icon: null,
+    priority: false,
+  },
+  {
+    id: "d46bf650-726a-4fd70-6d005941fb82",
+    created_at: "2025-01-25T09:38:01.015228+00:00",
+    name: "Smart Phones",
+    icon: null,
+    priority: false,
+  },
+];
 
 export const phoneNumber = "8464914395";
-

@@ -17,7 +17,7 @@ const BannerSection = () => {
     setHydrated(true);
   }, []);
 
-  if (!hydrated) {
+  if (!hydrated || isLoading) {
     return (
       <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
     );
@@ -28,12 +28,8 @@ const BannerSection = () => {
 
   return (
     <div>
-      {isLoading ? (
-        <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
-      ) : (
-        data && (
-          <CarouselBanner imageLinks={data[0].bannerImages.photos || []} />
-        )
+      {data && (
+        <CarouselBanner imageLinks={data[0].bannerImages.photos || []} />
       )}
     </div>
   );

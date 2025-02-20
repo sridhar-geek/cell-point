@@ -9,9 +9,11 @@ const RenderCategories = ({ groupedProducts }: GroupedProductsProps) => {
         ([categoryName, categoryProducts]) => (
           <div key={categoryName}>
             <h3 className="text-2xl font-bold m-2">{categoryName}</h3>
-            <div className="flex items-center gap-3 overflow-x-auto snap-x snap-mandatory">
+            <div className="flex items-center gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar h-72">
+              {" "}
+              {/* Hide scrollbar */}
               {categoryProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} admin={false} />
               ))}
             </div>
           </div>
@@ -20,6 +22,5 @@ const RenderCategories = ({ groupedProducts }: GroupedProductsProps) => {
     </div>
   );
 };
-
 
 export default RenderCategories;

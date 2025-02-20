@@ -1,4 +1,5 @@
-import { supabase } from "@/lib/supabaseClient";
+import { errorMsg, getTokenandId } from "@/lib/common";
+import { getSupabaseClient, supabase } from "@/lib/supabaseClient";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -19,26 +20,51 @@ export async function GET(req: NextRequest) {
       status: 200,
     });
   } catch (error: unknown) {
-    const errorMessage =
-      (error as { response?: { data?: { message?: string } } }).response?.data
-        ?.message || (error as Error).message;
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
-    });
+    return errorMsg(error);
   }
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  try {
-    const response = await supabase.from("Category").insert([body]);
-    return new Response(JSON.stringify(response.data), { status: 201 });
-  } catch (error: unknown) {
-    const errorMessage =
-      (error as { response?: { data?: { message?: string } } }).response?.data
-        ?.message || (error as Error).message;
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
+  // Extract Bearer Token
+  const { token } = getTokenandId(req);
+  if (!token)
+    return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
     });
+  try {
+    const requestData = await req.json();
+    // Validate required fields
+    console.log("requestData", requestData);
+    const {
+      name,
+      priority
+    } = requestData;
+    const supabase = getSupabaseClient(token);
+
+    // Insert new product
+    const { data, error } = await supabase
+      .from("Category")
+      .insert([
+        {
+          name,
+         priority
+        },
+      ])
+      .select();
+
+    console.log("response", data, error);
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return new NextResponse(
+      JSON.stringify({
+        message: "Product created successfully",
+        product: data,
+      }),
+      { status: 201 }
+    );
+  } catch (error: unknown) {
+    return errorMsg(error);
   }
 }

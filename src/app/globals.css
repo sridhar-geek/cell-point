@@ -69,7 +69,15 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-   .footer_items {
+  .footer_items {
     @apply mb-3 font-medium hover:scale-105 select-none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
   }
 }

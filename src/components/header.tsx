@@ -4,11 +4,13 @@ import { Facebook, Instagram, Phone } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { phoneNumber } from "@/lib/data";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const { toast } = useToast();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,6 +85,7 @@ const Header = () => {
           alt="Logo"
           priority={true}
           title="Divya Cell Point"
+          onClick={() => router.push('/')}
         />
         {/* Social links */}
         <div className="flex justify-center items-center gap-4 cursor-pointer">
@@ -92,7 +95,7 @@ const Header = () => {
           <Instagram
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
-          <Image
+          {/* <Image
             src="/whatsApp.svg"
             alt="Your SVG description"
             width={32}
@@ -102,10 +105,9 @@ const Header = () => {
                 `https://api.whatsapp.com/send?phone=${phoneNumber}`
               )
             }
-          />
+          /> */}
         </div>
       </section>
-      {/* <div className="shadow-md shadow-blue-500 p-5 flex justify-center items-center"></div> */}
     </header>
   );
 };

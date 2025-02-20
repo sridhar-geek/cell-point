@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { FieldValues, ControllerRenderProps, Path } from "react-hook-form";
+import { Checkbox } from "./ui/checkbox";
 
 interface CustomProps<T extends FieldValues> {
   control: Control<T>;
@@ -60,6 +61,21 @@ const RenderInput = <T extends FieldValues>({
           </div>
         </FormControl>
       );
+    case "checkbox":
+      return (
+        <FormControl>
+          <div className="flex items-center gap-4">
+            <label htmlFor={props.name} className="checkbox-label">
+               {props.label}
+             </label>
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+          </div>
+        </FormControl>
+      );
     default:
       return (
         <FormControl>
@@ -83,7 +99,15 @@ const FormFeild = <T extends FieldValues>(props: CustomProps<T>) => {
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel
+            className={`${
+              props.type === "checkbox"
+                ? "hidden"
+                : "block"
+            }`}
+          >
+            {label}
+          </FormLabel>
           <RenderInput field={field} props={props} />
           <FormMessage />
         </FormItem>

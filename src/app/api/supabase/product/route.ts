@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { NextResponse, NextRequest } from "next/server";
+import { getSupabaseClient } from "@/lib/supabaseClient";
+import { errorMsg, getTokenandId } from "@/lib/common";
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,7 +12,7 @@ export async function GET(req: NextRequest) {
     if (priority !== null) {
       query = query.eq("Category.priority", priority === "true");
     }
-    const { data, error } = await query ;
+    const { data, error } = await query;
     if (error) {
       throw new Error(error.message);
     }
@@ -18,31 +20,60 @@ export async function GET(req: NextRequest) {
       status: 200,
     });
   } catch (error: unknown) {
-    const errorMessage =
-      (error as { response?: { data?: { message?: string } } }).response?.data
-        ?.message || (error as Error).message;
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
-    });
+    return errorMsg(error);
   }
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  // Extract Bearer Token
+  const { token } = getTokenandId(req);
+  if (!token)
+    return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
   try {
-    const response = await supabase.from("Category").insert([body]);
+    const requestData = await req.json();
+    // Validate required fields
+    const {
+      name,
+      categoryName,
+      price,
+      offerPrice,
+      description,
+      available,
+      photos,
+    } = requestData;
+    const supabase = getSupabaseClient(token);
 
-    if (response.error) {
-      throw new Error(response.error.message);
+    // Insert new product
+    const { data, error } = await supabase
+      .from("Product")
+      .insert([
+        {
+          name,
+          categoryName,
+          price,
+          offerPrice,
+          description,
+          available,
+          photos,
+        },
+      ])
+      .select();
+
+    console.log("response", data, error);
+    if (error) {
+      throw new Error(error.message);
     }
 
-    return new Response(JSON.stringify(response.data), { status: 201 });
+    return new NextResponse(
+      JSON.stringify({
+        message: "Product created successfully",
+        product: data,
+      }),
+      { status: 201 }
+    );
   } catch (error: unknown) {
-    const errorMessage =
-      (error as { response?: { data?: { message?: string } } }).response?.data
-        ?.message || (error as Error).message;
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
-    });
+    return errorMsg(error);
   }
 }

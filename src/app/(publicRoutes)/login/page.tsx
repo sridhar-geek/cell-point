@@ -1,5 +1,5 @@
 "use client";
-
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -76,6 +76,15 @@ export default function LoginPage() {
             description: `Welcome User`,
             variant: "default",
           });
+          const session = response.data.session;
+          session.expires_at = Math.floor(Date.now() / 1000) + 864000; // 10 days in seconds
+          localStorage.setItem("supabaseSession", JSON.stringify(session));
+          // Store session data in cookies
+          setCookie("supabaseSession", JSON.stringify(session), {
+            maxAge: 864000, // 10 days in seconds
+            path: "/",
+          });
+
           router.push("/admin/dashboard");
         } else {
           // Login failed

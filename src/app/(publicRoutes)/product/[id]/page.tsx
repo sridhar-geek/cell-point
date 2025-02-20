@@ -1,14 +1,15 @@
 "use client";
 import CarouselBanner from "@/components/shadcnBanner";
-import { productsProp } from "@/lib/types";
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Share2, Star } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { phoneNumber } from "@/lib/data";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { Skeleton } from "@/components/ui/skeleton";
+import { productsProp } from "@/lib/types";
+// import { product } from "@/lib/data";
 
 const ProductsInfo = () => {
   const router = useRouter();
@@ -32,11 +33,11 @@ const ProductsInfo = () => {
     setUrl(window.location.href);
   }, []);
 
-  if (!hydrated) {
+  if (!hydrated || isLoading) {
     return (
       <div className="flex-col">
         <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
-        <div className="space-y-2">
+        <div className="space-y-2 mt-10">
           <Skeleton className="h-2 md:h-4 w-[125px] md:w-[250px]" />
           <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
           <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
@@ -110,58 +111,93 @@ const ProductsInfo = () => {
       });
   };
   return (
-    <div>
-      {isLoading ? (
-        <div className="flex-col">
-          <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
-          <div className="space-y-2">
-            <Skeleton className="h-2 md:h-4 w-[125px] md:w-[250px]" />
-            <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
-            <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
-          </div>
-        </div>
-      ) : (
-        <div>
-          {product ? (
-            <>
-              <ArrowLeft
-                onClick={() => {
-                  router.back();
-                }}
-                className="cursor-pointer m-6"
-                size={"44px"}
-              />
+    <div className="min-h-screen py-6">
+      <ArrowLeft
+        onClick={() => router.back()}
+        className="cursor-pointer m-6 text-gray-700 hover:text-gray-900"
+        size={44}
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {product ? (
+          <>
+            {/* Image Carousel */}
+            <div className="mb-8">
               <CarouselBanner imageLinks={product[0].photos?.photos || []} />
-              <div className="mx-3 md:mx-8 lg:mx-10 flex-col gap-20">
-                <div className="flex-col justify-center items-center text-center">
-                  <h1 className="text-xl ">{product[0].name}</h1>
-                  <h3 className="text-xs">{product[0].categoryName}</h3>
+            </div>
+
+            {/* Product Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Left Column: Product Details */}
+              <div className="space-y-6">
+                <div className="text-center md:text-left">
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    {product[0].name}
+                  </h1>
+                  <h3 className="text-sm text-gray-500 mt-2">
+                    {product[0].categoryName}
+                  </h3>
                 </div>
-                <div className="flex  items-center">
-                  <h2 className="text-xl p-2 ">Price: </h2>
-                  <div className="line-through pr-3">₹ {product[0].price}</div>
-                  <div>₹ {product[0].offerPrice}</div>
+
+                {/* Price */}
+                <div className="flex items-center space-x-4">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Price:
+                  </h2>
+                  <div className="text-lg text-gray-500 line-through">
+                    ₹{product[0].price}
+                  </div>
+                  <div className="text-2xl font-bold text-green-600">
+                    ₹{product[0].offerPrice}
+                  </div>
                 </div>
-                <div>
-                  <h2>Ratings : </h2>
+
+                {/* Ratings */}
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className="w-5 h-5 text-yellow-400 fill-yellow-400"
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-500">(4.5)</span>
                 </div>
-                <span className="text-xl">Description</span>
-                <div className="indent-4">{product[0].description}</div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Description
+                  </h2>
+                  <p className="text-gray-600 indent-4">
+                    {product[0].description}
+                  </p>
+                </div>
               </div>
-              <div className="w-full mt-10">
-                <Button className="w-1/2" onClick={handleShare}>
-                  Share <Share2 />
+
+              {/* Right Column: Buttons */}
+              <div className="flex flex-col space-y-4">
+                <Button
+                  onClick={handleShare}
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                >
+                  Share <Share2 className="ml-2" />
                 </Button>
-                <Button className="w-1/2" onClick={handleBuy}>
-                  Buy
+                <Button
+                  onClick={handleBuy}
+                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold"
+                >
+                  Buy Now
                 </Button>
               </div>
-            </>
-          ) : (
-            <span>No product data available</span>
-          )}
-        </div>
-      )}
+            </div>
+          </>
+        ) : (
+          <div className="text-center text-gray-700">
+            No product data available
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -3,7 +3,9 @@ import RenderCategories from "./renderCategories";
 import { productsProp } from "@/lib/types";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { useEffect, useState } from "react";
-import CardSkeleton from "./skeleton";
+import {CardSkeleton} from "./skeleton";
+// import { products } from "@/lib/data";
+import { groupByCategory } from "@/lib/common";
 
 const PrioritySection = () => {
   const { data, isLoading, error } = usePersistentSWR<productsProp[]>(
@@ -17,27 +19,16 @@ const PrioritySection = () => {
     setHydrated(true);
   }, []);
 
-  if (!hydrated) {
+  if (!hydrated || isLoading) {
     return (
       <div>
         <h3 className="text-2xl font-bold m-2">New Lanches</h3>
         <CardSkeleton />
       </div>
-    ); 
+    );
   }
 
-  // Function to group products by category
-  const groupByCategory = (items: productsProp[]) => {
-    return items.reduce<Record<string, productsProp[]>>((acc, product) => {
-      const category = product.categoryName || "Uncategorized";
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(product);
-      return acc;
-    }, {});
-  };
-  const groupedProducts = data ? groupByCategory(data) : {};
+  const groupedProducts = data ? groupByCategory(data, "All") : {};
 
   if (error) {
     // Give Proper Error Message
@@ -50,14 +41,7 @@ const PrioritySection = () => {
 
   return (
     <div>
-      {isLoading ? (
-        <div>
-          <h3 className="text-2xl font-bold m-2">New Lanches</h3>
-          <CardSkeleton />
-        </div>
-      ) : (
-        <RenderCategories groupedProducts={groupedProducts} />
-      )}
+      <RenderCategories groupedProducts={groupedProducts} />
     </div>
   );
 };
