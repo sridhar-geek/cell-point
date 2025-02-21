@@ -8,7 +8,6 @@ export default function DashboardPage() {
     async function refreshSession() {
       const sessionData = localStorage.getItem("supabaseSession");
       const session = sessionData ? JSON.parse(sessionData) : null;
-console.log("Data from session", sessionData);
       if (session) {
         const { data, error } = await supabase.auth.refreshSession(session);
 

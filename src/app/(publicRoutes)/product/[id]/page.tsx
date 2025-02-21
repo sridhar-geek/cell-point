@@ -163,7 +163,18 @@ const ProductsInfo = () => {
                   </div>
                   <span className="text-sm text-gray-500">(4.5)</span>
                 </div>
-
+                {/*Availablity  */}
+                <div>
+                  {product[0].available ? (
+                    <span className="text-green-800 font-bold">
+                      It is readily Available
+                    </span>
+                  ) : (
+                    <span className="text-red-900 font-bold">
+                      It is currently unavailable, Place an order to get it soon
+                    </span>
+                  )}
+                </div>
                 {/* Description */}
                 <div className="space-y-2">
                   <h2 className="text-xl font-semibold text-gray-900">

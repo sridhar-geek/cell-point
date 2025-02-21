@@ -19,15 +19,17 @@ export const CardSkeleton = ({ className }: { className?: string }) => {
 
 export const CategorySkeleton = ({ className }: { className?: string }) => {
   return (
+    <div className="mt-5 mb-5">
     <div
       className={cn(
         "flex items-center gap-3 overflow-x-auto snap-x snap-mandatory",
         className
       )}
     >
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Skeleton key={index} className="h-2 md:h-4 w-[90px] md:w-[200px]" />
-      ))}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <Skeleton key={index} className="h-2 md:h-4 w-[90px] md:w-[200px]" />
+        ))}
+      </div>
     </div>
   );
 };

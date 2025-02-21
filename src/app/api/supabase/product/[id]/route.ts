@@ -31,7 +31,6 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const requestData = await req.json();
-    console.log("id", id, "data", requestData);
 
     if (!requestData || Object.keys(requestData).length === 0) {
       return new NextResponse(
@@ -54,7 +53,6 @@ export async function PATCH(req: NextRequest) {
       .eq("id", id)
       .select(); // 👈 Ensure Supabase returns the updated row
 
-    console.log("Supabase Response:", { data, error });
 
     if (error) {
       throw new Error(error.message);
@@ -81,9 +79,7 @@ export async function PATCH(req: NextRequest) {
 
 
 export async function DELETE(req: NextRequest) {
-  console.log("request came to delete request");
   const { id, token } = getTokenandId(req);
-  console.log("id", id , "token", token);
   if (!token)
     return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
@@ -91,7 +87,6 @@ export async function DELETE(req: NextRequest) {
   const supabase = getSupabaseClient(token);
   try {
     const response = await supabase.from("Product").delete().eq("id", id);
-    console.log("response", response);
     if (response.error) {
       throw new Error(response.error.message);
     } else {

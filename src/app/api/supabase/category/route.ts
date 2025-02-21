@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json();
     // Validate required fields
-    console.log("requestData", requestData);
     const {
       name,
       priority
@@ -52,7 +51,6 @@ export async function POST(req: NextRequest) {
       ])
       .select();
 
-    console.log("response", data, error);
     if (error) {
       throw new Error(error.message);
     }

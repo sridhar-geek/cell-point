@@ -61,7 +61,6 @@ export async function POST(req: NextRequest) {
       ])
       .select();
 
-    console.log("response", data, error);
     if (error) {
       throw new Error(error.message);
     }

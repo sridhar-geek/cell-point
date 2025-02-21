@@ -59,7 +59,7 @@ export async function PATCH(req: NextRequest) {
 
     return new NextResponse(
       JSON.stringify({
-        message: "Product updated successfully",
+        message: "Category updated successfully",
         product: data,
       }),
       { status: 200 }
