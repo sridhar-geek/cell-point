@@ -103,10 +103,16 @@ const ProductCard = ({ product, admin }: productCardProp) => {
           <div className="flex items-center gap-2">
             <p className="text-black font-semibold">Price:</p>
             <span className="text-sm text-gray-500 line-through">
-              ₹{product.price}
+              {new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+              }).format(product.price)}
             </span>
             <span className="text-lg font-bold text-green-600">
-              ₹{product.offerPrice}
+              {new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+              }).format(product.offerPrice)}{" "}
             </span>
           </div>
           <div className="flex items-center gap-1">

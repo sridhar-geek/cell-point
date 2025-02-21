@@ -144,10 +144,16 @@ const ProductsInfo = () => {
                     Price:
                   </h2>
                   <div className="text-lg text-gray-500 line-through">
-                    ₹{product[0].price}
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                    }).format(product[0].price)}
                   </div>
                   <div className="text-2xl font-bold text-green-600">
-                    ₹{product[0].offerPrice}
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                    }).format(product[0].offerPrice)}
                   </div>
                 </div>
 

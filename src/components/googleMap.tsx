@@ -18,7 +18,7 @@ const GoogleMap = () => {
   const atchuthapuram = { lat: 17.5643754, lng: 82.9797491 }; 
 
   const google_api_key = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
-  const mapId = process.env.NEXT_PUBLIC_MAPID;
+  // const mapId = process.env.NEXT_PUBLIC_MAPID;
 
   return (
     <APIProvider apiKey={google_api_key}>
@@ -26,7 +26,7 @@ const GoogleMap = () => {
         <Map
           zoom={12}
           center={maduthuru} 
-          mapId={mapId}
+          // mapId={mapId}
           disableDefaultUI={true} 
         >
           {/* First Marker */}
