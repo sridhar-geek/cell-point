@@ -95,17 +95,17 @@ const Header = () => {
           <Instagram
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
-          {/* <Image
-            src="/whatsApp.svg"
+          <Image
+            src="/whats.svg"
             alt="Your SVG description"
-            width={32}
-            height={32}
+            width={22}
+            height={22}
             onClick={() =>
               handleSocialClick(
                 `https://api.whatsapp.com/send?phone=${phoneNumber}`
               )
             }
-          /> */}
+          />
         </div>
       </section>
     </header>
