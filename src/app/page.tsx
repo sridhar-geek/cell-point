@@ -17,9 +17,9 @@ const HomePage = () => {
         <PriroritySection />
         <NonPriroritySection />
       </div>
-      <div className="h-[400px] mt-3 mb-3">
+      {/* <div className="h-[400px] mt-3 mb-3">
         <GoogleMap /> 
-      </div>
+      </div> */}
       <Footer />
     </main>
   );
