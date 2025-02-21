@@ -25,38 +25,38 @@ import { cookies } from "next/headers";
 
 
 export async function middleware(request: NextRequest) {
-//   const url = request.nextUrl.pathname;
-//   const { pathname } = request.nextUrl;
-//   const publicRoutes = ["/", "/login"];
-//   const restrictedRoutes = ["/login"];
+  const url = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
+  const publicRoutes = ["/", "/login"];
+  const restrictedRoutes = ["/login"];
 
-//   // Retrieve session data from cookies
-//   const cookieStore = await cookies();
-//   const sessionData = cookieStore.get("supabaseSession")?.value;
-//   const session = sessionData ? JSON.parse(sessionData) : null;
-//   const token = session ? session.access_token : null;
-//   const expiresAt = session ? session.expires_at : null;
+  // Retrieve session data from cookies
+  const cookieStore = await cookies();
+  const sessionData = cookieStore.get("supabaseSession")?.value;
+  const session = sessionData ? JSON.parse(sessionData) : null;
+  const token = session ? session.access_token : null;
+  const expiresAt = session ? session.expires_at : null;
 
-//   // Check if the token is valid and not expired
-//   const isTokenValid =
-//     token && expiresAt && expiresAt > Math.floor(Date.now() / 1000);
+  // Check if the token is valid and not expired
+  const isTokenValid =
+    token && expiresAt && expiresAt > Math.floor(Date.now() / 1000);
 
-//   if (isTokenValid && restrictedRoutes.includes(url)) {
-//     return NextResponse.redirect(new URL("/admin/products", request.url));
-//   }
+  if (isTokenValid && restrictedRoutes.includes(url)) {
+    return NextResponse.redirect(new URL("/admin/products", request.url));
+  }
 
-//   // Check if the user is accessing a public route
-//   if (publicRoutes.includes(pathname) || pathname.startsWith("/product/")) {
-//     return NextResponse.next();
-//   }
+  // Check if the user is accessing a public route
+  if (publicRoutes.includes(pathname) || pathname.startsWith("/product/")) {
+    return NextResponse.next();
+  }
 
-//   if (!isTokenValid) {
-//     return NextResponse.redirect(new URL("/", request.url));
-//   }
+  if (!isTokenValid) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
-//   return NextResponse.next();
-// }
+  return NextResponse.next();
+}
 
-// export const config = {
-//   matcher: ["/((?!_next|api|favicon.ico).*)"],
+export const config = {
+  matcher: ["/((?!_next|api|favicon.ico).*)"],
 };
