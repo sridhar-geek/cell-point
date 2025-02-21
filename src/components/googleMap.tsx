@@ -41,7 +41,7 @@ const GoogleMap = () => {
               anchor={marker1}
               maxWidth={200}
               onCloseClick={() => setInfowindowOpen1(false)}
-              style={{ height: "50px" }} 
+              style={{ height: "30px" }} 
             >
               <div style={{ fontSize: "14px" }}>Divya Cell Point Maduthuru</div>
             </InfoWindow>
@@ -59,7 +59,7 @@ const GoogleMap = () => {
               anchor={marker2}
               maxWidth={200}
               onCloseClick={() => setInfowindowOpen2(false)}
-              style={{ height: "50px" }} 
+              style={{ height: "30px" }} 
             >
               <div style={{ fontSize: "14px" }}>Divya Cell Point Maduthuru</div>
             </InfoWindow>
