@@ -80,12 +80,13 @@ const Header = () => {
           src="/logo.png"
           width={100}
           height={100}
+          unoptimized
           className="m-0 rounded-xl align-middle cursor-pointer"
           sizes="300px"
           alt="Logo"
           priority={true}
           title="Divya Cell Point"
-          onClick={() => router.push('/')}
+          onClick={() => router.push("/")}
         />
         {/* Social links */}
         <div className="flex justify-center items-center gap-4 cursor-pointer">
@@ -95,9 +96,9 @@ const Header = () => {
           <Instagram
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
-          <Image
+          <img
             src="/whats.svg"
-            alt="Your SVG description"
+            alt="WhatsApp Icon"
             width={22}
             height={22}
             onClick={() =>
