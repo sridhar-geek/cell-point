@@ -3,7 +3,7 @@ import Footer from "@/components/footer";
 import PriroritySection from "@/components/prirority";
 import NonPriroritySection from "@/components/nonPriroritySection";
 import BannerSection from "@/components/bannerSection";
-import GoogleMap from "@/components/googleMap";
+// import GoogleMap from "@/components/googleMap";
 
 
 
