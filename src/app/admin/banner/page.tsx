@@ -5,7 +5,7 @@ import ImagePreviewer from "@/components/imagePreviewer";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { bannerImagesProp } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient, supabase } from "@/lib/supabaseClient";
 
 const BannerImages = () => {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
@@ -63,7 +63,8 @@ const BannerImages = () => {
     try {
       // Upload new images to Supabase storage
       const uploadedImageUrls = await uploadImagesToSupabase(uploadedImages);
-
+      // console.log("supabaseImages", supabaseImages);
+      // console.log("uploadedImages", uploadedImageUrls);
       // Combine remaining Supabase images with newly uploaded images
       const updatedImages = [...supabaseImages, ...uploadedImageUrls];
       console.log("updatedImages", updatedImages);
@@ -81,11 +82,13 @@ const BannerImages = () => {
   // Upload images to Supabase storage
   const uploadImagesToSupabase = async (images: File[]): Promise<string[]> => {
     const uploadedUrls: string[] = [];
+    const data = localStorage.getItem("supabaseSession");
+    const session = data ? JSON.parse(data) : null;
 
     for (const image of images) {
       const filePath = `banner-images/${Date.now()}-${image.name}`;
-      const { error } = await supabase.storage
-        .from("images bucket")
+      const { error } = await getSupabaseClient(session.access_token)
+        .storage.from("images bucket")
         .upload(filePath, image);
 
       if (error) {
