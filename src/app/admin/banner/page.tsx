@@ -5,16 +5,21 @@ import { bannerImagesProp } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import BannerImages from "@/components/wholeImageComponent";
 import { Button } from "@/components/ui/button";
+import { mutate } from "swr";
+import { errorMsg } from "@/lib/common";
+import { useToast } from "@/hooks/use-toast";
+import Spinner from "@/components/spinner";
+import { useRouter } from "next/navigation";
 
 const UpdateBannerImages = () => {
   const [supabaseImages, setSupabaseImages] = useState<string[]>([]);
   const [finalImages, setFinalImages] = useState<string[]>([]);
-
+  const [isImagesUpdating, setIsImagesUpdating] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
   const { data, isLoading, error } = usePersistentSWR<bannerImagesProp[]>(
     "bannerImages",
-    "/api/supabase/common?column=bannerImages"
-    // "supabaseeImages",
-    // "/api/supabase/imagebucket"
+    "/api/supabase/common"
   );
 
   const [hydrated, setHydrated] = useState(false);
@@ -42,32 +47,48 @@ const UpdateBannerImages = () => {
 
   // Save images to the database
   const saveImagesToDatabase = async () => {
-    console.log("Saving images:", finalImages);
-   
-    // const { error } = await supabase
-    //   .from("your_table_name") // Replace with your table name
-    //   .update({ bannerImages: { photos: finalImages } })
-    //   .eq("id", data?.[0]?.id); // Replace with your primary key logic
-    // if (error) {
-    //   throw new Error(error.message);
-    // }
-
-    alert("Images updated successfully!");
+    const id = data && data[0].id;
+    const localstorageData = localStorage.getItem("supabaseSession");
+    const session = localstorageData ? JSON.parse(localstorageData) : null;
+    setIsImagesUpdating(true);
+    try {
+      const response = await fetch(`/api/supabase/common/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(finalImages),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      console.log("response", response);
+      // Revalidate the data to ensure it's up-to-date
+      mutate("bannerImages");
+      setIsImagesUpdating(false);
+      toast({
+        title: "Banner Images Updated",
+        description: "Images updated Successfully",
+      });
+      router.push("/admin/dashboard");
+    } catch (error: unknown) {
+      setIsImagesUpdating(false);
+      console.log(error);
+      return errorMsg(error);
+    }
   };
 
   return (
     <div>
-      <BannerImages
-        supabaseStorage={supabaseImages}
-        onSave={setFinalImages} 
-      />
+      <BannerImages supabaseStorage={supabaseImages} onSave={setFinalImages} />
 
       <Button
         onClick={saveImagesToDatabase}
         className="mt-4 px-4 py-2 bg-black text-white rounded"
-        disabled= {finalImages.length === 0}
+        disabled={finalImages.length === 0}
       >
-        Confirm
+        {isImagesUpdating ? <Spinner /> : "Conform"}
       </Button>
     </div>
   );

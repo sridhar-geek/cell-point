@@ -34,6 +34,7 @@ export type categoryProp = {
 };
 
 export type bannerImagesProp = {
+  id:string;
   bannerImages: {
     photos: string[];
   };

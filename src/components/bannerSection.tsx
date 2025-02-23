@@ -8,7 +8,7 @@ import { Skeleton } from "./ui/skeleton";
 const BannerSection = () => {
   const { data, isLoading, error } = usePersistentSWR<bannerImagesProp[]>(
     "bannerImages",
-    "/api/supabase/common?column=bannerImages"
+    "/api/supabase/common"
   );
 
   const [hydrated, setHydrated] = useState(false);

@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Facebook, Instagram, Phone } from "lucide-react";
-// import Image from "next/image";
+import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { phoneNumber } from "@/lib/data";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const { toast } = useToast();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  // const router = useRouter()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,7 +76,7 @@ const Header = () => {
           <span>{phoneNumber}</span>
         </div>
         {/* Logo */}
-        {/* <Image
+        <Image
           src="/logo.png"
           width={100}
           height={100}
@@ -87,7 +87,7 @@ const Header = () => {
           priority={true}
           title="Divya Cell Point"
           onClick={() => router.push("/")}
-        /> */}
+        />
         {/* Social links */}
         <div className="flex justify-center items-center gap-4 cursor-pointer">
           <Facebook
@@ -96,7 +96,7 @@ const Header = () => {
           <Instagram
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
-          {/* <img
+          <Image
             src="/whats.svg"
             alt="WhatsApp Icon"
             width={22}
@@ -106,7 +106,7 @@ const Header = () => {
                 `https://api.whatsapp.com/send?phone=${phoneNumber}`
               )
             }
-          /> */}
+          />
         </div>
       </section>
     </header>
