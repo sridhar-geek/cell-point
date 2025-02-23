@@ -1,6 +1,4 @@
-import React from "react";
-import { Skeleton } from "./ui/skeleton";
-import { inputFeilds } from "@/lib/common";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FormSkeleton = () => {
   return (
@@ -12,8 +10,8 @@ const FormSkeleton = () => {
         <Skeleton className="h-40 w-full rounded-lg" />
       </div>
       <div className="space-y-6">
-        {inputFeilds.map((inputFeild) => (
-          <div key={inputFeild.label} className="w-full">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className="w-full">
             <Skeleton className="h-10 w-full" />
           </div>
         ))}
