@@ -39,11 +39,6 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    // Ensure `photos` matches Supabase JSONB format
-    if (requestData.photos && !requestData.photos.photos) {
-      requestData.photos = { photos: requestData.photos };
-    }
-
     const supabase = getSupabaseClient(token);
 
     // Perform update operation
@@ -51,7 +46,7 @@ export async function PATCH(req: NextRequest) {
       .from("Product")
       .update(requestData)
       .eq("id", id)
-      .select(); // 👈 Ensure Supabase returns the updated row
+      .select();
 
 
     if (error) {

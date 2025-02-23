@@ -44,12 +44,13 @@ const GoogleMap = () => {
       <div style={{ height: "100%", width: "100%" }}>
       
         <Map
-          zoom={12}
+          zoom={20}
           center={maduthuru}
           mapId={mapId}
           disableDefaultUI={false}
           gestureHandling="greedy"
           draggable={true}
+          disableDoubleClickZoom={false}
         >
           {/* First Marker */}
           <AdvancedMarker
