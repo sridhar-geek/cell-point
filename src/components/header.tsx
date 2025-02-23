@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Facebook, Instagram, Phone } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { phoneNumber } from "@/lib/data";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 const Header = () => {
   const { toast } = useToast();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const router = useRouter()
+  // const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {

@@ -68,18 +68,6 @@ const DeleteDialog = ({
           : `${categoryName} has been deleted successfully.`,
       });
 
-      // Optimistically update the SWR cache
-      // mutate(
-      //   "allProducts", // SWR key for the products data
-      //   async (currentData: productsProp[]) => {
-      //     // Filter out the deleted product from the current data
-      //     return currentData.filter(
-      //       (product: productsProp) => product.id !== id
-      //     );
-      //   },
-      //   false // Do not revalidate immediately (optimistic update)
-      // );
-
       // Revalidate the data to ensure it's up-to-date
       mutate(product ? "allProducts" : "allcategories");
 

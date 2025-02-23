@@ -22,8 +22,10 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function PATCH(req: NextRequest) {
-  const { id, token } = getTokenandId(req);
+
+export async function POST(req: NextRequest) {
+  console.log("request came to images upload");
+  const { token } = getTokenandId(req);
   if (!token)
     return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
@@ -31,43 +33,36 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const requestData = await req.json();
+    console.log("body data", requestData);
 
-    if (!requestData || Object.keys(requestData).length === 0) {
+    if (!requestData) {
       return new NextResponse(
-        JSON.stringify({ error: "No data provided for update" }),
+        JSON.stringify({ error: "No Images sent to update storage" }),
         { status: 400 }
       );
     }
-
-    // Ensure `photos` matches Supabase JSONB format
-    if (requestData.photos && !requestData.photos.photos) {
-      requestData.photos = { photos: requestData.photos };
-    }
-
+    const uploadedUrls: string[] = [];
     const supabase = getSupabaseClient(token);
 
-    // Perform update operation
-    const { data, error } = await supabase
-      .from("Product")
-      .update(requestData)
-      .eq("id", id)
-      .select(); // 👈 Ensure Supabase returns the updated row
+    for (const image of requestData) {
+      const filePath = `banner-images/${Date.now()}-${image.name}`;
+      const { error } = await getSupabaseClient(token)
+        .storage.from("images")
+        .upload(filePath, image);
 
-    if (error) {
-      throw new Error(error.message);
+      if (error) {
+        console.error("Error uploading image:", error);
+        continue;
+      }
+
+      const { data } = supabase.storage.from("images").getPublicUrl(filePath);
+
+      uploadedUrls.push(data.publicUrl);
     }
-
-    if (data === null || data.length === 0) {
-      return new NextResponse(
-        JSON.stringify({ error: "No matching product found." }),
-        { status: 404 }
-      );
-    }
-
+    console.log("urls", uploadedUrls);
     return new NextResponse(
       JSON.stringify({
-        message: "Product updated successfully",
-        product: data,
+        uploadedUrls,
       }),
       { status: 200 }
     );
