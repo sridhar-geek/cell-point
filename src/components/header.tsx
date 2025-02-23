@@ -76,7 +76,7 @@ const Header = () => {
           <span>{phoneNumber}</span>
         </div>
         {/* Logo */}
-        <Image
+        {/* <Image
           src="/logo.png"
           width={100}
           height={100}
@@ -87,7 +87,7 @@ const Header = () => {
           priority={true}
           title="Divya Cell Point"
           onClick={() => router.push("/")}
-        />
+        /> */}
         {/* Social links */}
         <div className="flex justify-center items-center gap-4 cursor-pointer">
           <Facebook
@@ -96,7 +96,7 @@ const Header = () => {
           <Instagram
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
-          <img
+          {/* <img
             src="/whats.svg"
             alt="WhatsApp Icon"
             width={22}
@@ -106,7 +106,7 @@ const Header = () => {
                 `https://api.whatsapp.com/send?phone=${phoneNumber}`
               )
             }
-          />
+          /> */}
         </div>
       </section>
     </header>

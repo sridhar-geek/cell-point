@@ -43,6 +43,7 @@ const Categories = () => {
   } = usePersistentSWR<productsProp[]>("allProducts", "/api/supabase/product");
   // Initialize visibleCategories when categories are loaded
   useEffect(() => {
+  
     if (categories) {
       const initialVisibility = categories.reduce((acc, category) => {
         acc[category.id] = true;
@@ -82,6 +83,7 @@ const Categories = () => {
       </div>
     );
   }
+  
 
   return (
     <div className="mt-10 mb-10">

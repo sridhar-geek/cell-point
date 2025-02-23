@@ -14,12 +14,23 @@ import { Eye, EyeOff } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { FieldValues, ControllerRenderProps, Path } from "react-hook-form";
 import { Checkbox } from "./ui/checkbox";
+import { Textarea } from "./ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface CustomProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   name: Path<T>;
   type: string;
+  data?: string[];
   placeholder: string;
   showPassword?: boolean;
   setShowPassword?: Dispatch<SetStateAction<boolean>>;
@@ -66,14 +77,45 @@ const RenderInput = <T extends FieldValues>({
         <FormControl>
           <div className="flex items-center gap-4">
             <label htmlFor={props.name} className="checkbox-label">
-               {props.label}
-             </label>
+              {props.label}
+            </label>
             <Checkbox
               id={props.name}
               checked={field.value}
               onCheckedChange={field.onChange}
             />
           </div>
+        </FormControl>
+      );
+    case "textbox":
+      return (
+        <FormControl>
+          <Textarea
+            placeholder={props.placeholder}
+            {...field}
+            onChange={(e) => field.onChange(e.target.value)}
+            value={field.value ?? ""}
+          />
+        </FormControl>
+      );
+    case "select":
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select a Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Categories</SelectLabel>
+                {props.data?.map((value, index) => (
+                  <SelectItem key={index} value={value}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </FormControl>
       );
     default:
@@ -83,7 +125,13 @@ const RenderInput = <T extends FieldValues>({
             placeholder={props.placeholder}
             {...field}
             type={props.type}
-            onChange={(e) => field.onChange(e.target.value)}
+            onChange={(e) =>
+              field.onChange(
+                props.type === "number"
+                  ? parseFloat(e.target.value)
+                  : e.target.value
+              )
+            }
             value={field.value ?? ""}
           />
         </FormControl>
@@ -100,11 +148,7 @@ const FormFeild = <T extends FieldValues>(props: CustomProps<T>) => {
       render={({ field }) => (
         <FormItem>
           <FormLabel
-            className={`${
-              props.type === "checkbox"
-                ? "hidden"
-                : "block"
-            }`}
+            className={`${props.type === "checkbox" ? "hidden" : "block"}`}
           >
             {label}
           </FormLabel>

@@ -3,7 +3,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { LayoutDashboard, FolderClosed, FileText, SquareX } from "lucide-react";
+import {
+  LayoutDashboard,
+  FolderClosed,
+  FileText,
+  SquareX,
+  Images,
+} from "lucide-react";
 import { Navigation } from "@/lib/types";
 import { Button } from "./ui/button";
 
@@ -31,7 +37,7 @@ const navigation = [
     name: "Banner",
     routeName: "banner",
     route: "/admin/banner",
-    icon: <FolderClosed />,
+    icon: <Images />,
   },
 ];
 

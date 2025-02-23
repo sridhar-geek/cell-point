@@ -1,18 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
-import ImageUploader from "@/components/imageUpload";
-import ImagePreviewer from "@/components/imagePreviewer";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { bannerImagesProp } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSupabaseClient, supabase } from "@/lib/supabaseClient";
+import BannerImages from "@/components/wholeImageComponent";
+import { Button } from "@/components/ui/button";
 
-const BannerImages = () => {
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [supabaseImages, setSupabaseImages] = useState<string[]>([]); // Track Supabase images
+const UpdateBannerImages = () => {
+  const [supabaseImages, setSupabaseImages] = useState<string[]>([]);
+  const [finalImages, setFinalImages] = useState<string[]>([]);
+
   const { data, isLoading, error } = usePersistentSWR<bannerImagesProp[]>(
     "bannerImages",
     "/api/supabase/common?column=bannerImages"
+    // "supabaseeImages",
+    // "/api/supabase/imagebucket"
   );
 
   const [hydrated, setHydrated] = useState(false);
@@ -38,101 +40,37 @@ const BannerImages = () => {
     return <div>Error fetching Images</div>;
   }
 
-  // Handle image upload
-  const handleUpload = (images: File[]) => {
-    setUploadedImages(images);
-  };
-
-  // Handle image delete
-  const handleDelete = (index: number, isSupabaseImage: boolean) => {
-    if (isSupabaseImage) {
-      // Delete from supabaseImages
-      const newSupabaseImages = [...supabaseImages];
-      newSupabaseImages.splice(index, 1);
-      setSupabaseImages(newSupabaseImages);
-    } else {
-      // Delete from uploadedImages
-      const newUploadedImages = [...uploadedImages];
-      newUploadedImages.splice(index, 1);
-      setUploadedImages(newUploadedImages);
-    }
-  };
-
-  // Handle saving images
-  const handleSave = async () => {
-    try {
-      // Upload new images to Supabase storage
-      const uploadedImageUrls = await uploadImagesToSupabase(uploadedImages);
-      // console.log("supabaseImages", supabaseImages);
-      // console.log("uploadedImages", uploadedImageUrls);
-      // Combine remaining Supabase images with newly uploaded images
-      const updatedImages = [...supabaseImages, ...uploadedImageUrls];
-      console.log("updatedImages", updatedImages);
-
-      // Save the updated images back to the database
-      // await saveImagesToDatabase(updatedImages);
-
-      alert("Images saved successfully!");
-    } catch (error) {
-      console.error("Error saving images:", error);
-      alert("Failed to save images.");
-    }
-  };
-
-  // Upload images to Supabase storage
-  const uploadImagesToSupabase = async (images: File[]): Promise<string[]> => {
-    const uploadedUrls: string[] = [];
-    const data = localStorage.getItem("supabaseSession");
-    const session = data ? JSON.parse(data) : null;
-
-    for (const image of images) {
-      const filePath = `banner-images/${Date.now()}-${image.name}`;
-      const { error } = await getSupabaseClient(session.access_token)
-        .storage.from("images bucket")
-        .upload(filePath, image);
-
-      if (error) {
-        console.error("Error uploading image:", error);
-        continue;
-      }
-
-      const publicUrl = await supabase.storage
-        .from("images bucket")
-        .getPublicUrl(filePath).data.publicUrl;
-
-      uploadedUrls.push(publicUrl);
-    }
-
-    return uploadedUrls;
-  };
-
   // Save images to the database
-  // const saveImagesToDatabase = async (images: string[]) => {
-  //   const { error } = await supabase
-  //     .from("your_table_name") // Replace with your table name
-  //     .update({ bannerImages: { photos: images } })
-  //     .eq("id", data?.[0]?.id); // Replace with your primary key logic
-  //   if (error) {
-  //     throw new Error(error.message);
-  //   }
-  // };
+  const saveImagesToDatabase = async () => {
+    console.log("Saving images:", finalImages);
+   
+    // const { error } = await supabase
+    //   .from("your_table_name") // Replace with your table name
+    //   .update({ bannerImages: { photos: finalImages } })
+    //   .eq("id", data?.[0]?.id); // Replace with your primary key logic
+    // if (error) {
+    //   throw new Error(error.message);
+    // }
+
+    alert("Images updated successfully!");
+  };
 
   return (
     <div>
-      <ImagePreviewer
-        supabaseImages={supabaseImages}
-        uploadedImages={uploadedImages}
-        onDelete={handleDelete}
+      <BannerImages
+        supabaseStorage={supabaseImages}
+        onSave={setFinalImages} 
       />
-      <ImageUploader onUpload={handleUpload} />
-      <button
-        onClick={handleSave}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+
+      <Button
+        onClick={saveImagesToDatabase}
+        className="mt-4 px-4 py-2 bg-black text-white rounded"
+        disabled= {finalImages.length === 0}
       >
-        Save Images
-      </button>
+        Confirm
+      </Button>
     </div>
   );
 };
 
-export default BannerImages;
+export default UpdateBannerImages;

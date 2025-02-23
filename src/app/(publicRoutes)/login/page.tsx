@@ -61,6 +61,7 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const email = values.email;
     const password = values.password;
+    console.log("login values", values);
 
     startTransition(async () => {
       try {

@@ -19,6 +19,7 @@ const ImagePreviewer = ({
   uploadedImages,
   onDelete,
 }: ImagePreviewerProps) => {
+  
   const imageLinks = [
     ...supabaseImages,
     ...uploadedImages.map((image) => URL.createObjectURL(image)),
@@ -40,7 +41,7 @@ const ImagePreviewer = ({
         >
           <CarouselContent className="w-full">
             {imageLinks.length === 0 ? (
-              <span className="text-center align-middle font-bold">
+              <span className="text-center w-full align-middle font-bold">
                 No Images found, Add few images to view the Preview
               </span>
             ) : (
