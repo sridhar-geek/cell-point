@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   APIProvider,
   Map,
@@ -13,45 +13,24 @@ const GoogleMap = () => {
   const [infowindowOpen2, setInfowindowOpen2] = useState(false);
   const [markerRef1, marker1] = useAdvancedMarkerRef();
   const [markerRef2, marker2] = useAdvancedMarkerRef();
-  // const [isMobileNetwork, setIsMobileNetwork] = useState(false);
   const maduthuru = { lat: 17.5578459, lng: 83.0142087 };
   const atchuthapuram = { lat: 17.5643754, lng: 82.9797491 };
 
   const google_api_key = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
   const mapId = process.env.NEXT_PUBLIC_MAPID;
 
-  // useEffect(() => {
-  //   const connection =
-  //     navigator.connection ||
-  //     navigator.mozConnection ||
-  //     navigator.webkitConnection;
-  //   if (connection) {
-  //     setIsMobileNetwork(
-  //       connection.effectiveType.includes("2g") ||
-  //         connection.effectiveType.includes("3g") ||
-  //         connection.effectiveType.includes("4g") ||
-  //         connection.effectiveType.includes("5g")
-  //     );
-  //   }
-  // }, []);
-
-  // if(isMobileNetwork){
-  //   <span>Slow network detected </span>
-  // }
-
+  
   return (
     <APIProvider apiKey={google_api_key}>
       <div style={{ height: "100%", width: "100%" }}>
-      
         <Map
+          key={mapId}
           zoom={20}
           center={maduthuru}
           mapId={mapId}
           disableDefaultUI={false}
-          gestureHandling="greedy"
-          draggable={true}
-          disableDoubleClickZoom={false}
-        >
+          gestureHandling="auto"
+                >
           {/* First Marker */}
           <AdvancedMarker
             ref={markerRef1}
