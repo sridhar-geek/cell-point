@@ -1,15 +1,14 @@
 "use client";
-import ProductCard from "@/components/productCard";
-// import { products } from "@/lib/data";
-// import { categories } from "@/lib/data";
+import ProductCard from "@/components/Product/productCard";
 import { PencilLine, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import EditDialog from "@/components/EditDialog";
-import DeleteDialog from "@/components/DeleteDialog";
-import { CardSkeleton } from "@/components/skeleton";
+import EditDialog from "@/components/Dialog/editDialog";
+import DeleteDialog from "@/components/Dialog/deleteDialog";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { categoryProp, productsProp } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { CardSkeleton } from "@/components/Skeleton/skeleton";
+import { Bounce } from "@/components/Skeleton/loading";
 
 const Categories = () => {
   const [hydrated, setHydrated] = useState(false);
@@ -19,6 +18,7 @@ const Categories = () => {
     null
   );
   const [isAddDialog, setIsAddDialog] = useState(false);
+  // used to hide and unhide categories
   const [visibleCategories, setVisibleCategories] = useState<{
     [key: string]: boolean;
   }>({});
@@ -32,7 +32,7 @@ const Categories = () => {
     isLoading,
     error,
   } = usePersistentSWR<categoryProp[]>(
-    "allcategories",
+    "allCategories",
     "/api/supabase/category"
   );
 
@@ -41,9 +41,9 @@ const Categories = () => {
     isLoading: productsLoading,
     error: productError,
   } = usePersistentSWR<productsProp[]>("allProducts", "/api/supabase/product");
+
   // Initialize visibleCategories when categories are loaded
   useEffect(() => {
-  
     if (categories) {
       const initialVisibility = categories.reduce((acc, category) => {
         acc[category.id] = true;
@@ -59,7 +59,7 @@ const Categories = () => {
         {Array.from({ length: 2 }).map((_, index) => (
           <div key={index}>
             <h3 className="text-2xl font-bold m-2">
-              Categories Loading <span className="animate-bounce">....</span>
+              Categories Loading <Bounce />
             </h3>
             <CardSkeleton className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 " />
           </div>
@@ -67,6 +67,8 @@ const Categories = () => {
       </div>
     );
   }
+
+  // set visiblity of the category
   const toggleCategoryVisibility = (categoryId: string) => {
     setVisibleCategories((prev) => ({
       ...prev,
@@ -76,14 +78,12 @@ const Categories = () => {
 
   //  Gives error Message
   if (error || productError) {
-    // Give Proper Error Message
     return (
       <div className="text-red-800 flex justify-center items-center h-44">
         Error Occoured while getting Products.....
       </div>
     );
   }
-  
 
   return (
     <div className="mt-10 mb-10">
@@ -92,6 +92,7 @@ const Categories = () => {
           ➕ Add New Category
         </Button>
       </div>
+      {/* Adding New Category */}
       <EditDialog
         add={true}
         name=""
@@ -121,6 +122,7 @@ const Categories = () => {
                   product={false}
                   onClose={() => setIsDeleteDialogOpen(false)}
                 />
+                {/* Toggle categories */}
                 <button
                   onClick={() => toggleCategoryVisibility(category.id)}
                   className="transition-transform duration-300 ease-in-out"
@@ -141,6 +143,7 @@ const Categories = () => {
                 opacity: visibleCategories[category.id] ? 1 : 0,
               }}
             >
+              {/* Render Categories and Products */}
               <div className="flex flex-wrap gap-4 justify-center items-center m-4">
                 {products &&
                   products
@@ -156,6 +159,7 @@ const Categories = () => {
             </div>
           </div>
         ))}
+      {/* Edit category Name */}
       {selectedCategory && (
         <EditDialog
           add={false}

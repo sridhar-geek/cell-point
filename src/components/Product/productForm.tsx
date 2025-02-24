@@ -3,16 +3,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { Form } from "@/components/ui/form";
 import * as z from "zod";
-import FormFeild from "@/components/formFeild";
+import FormFeild from "../formFeild";
 import { Button } from "@/components/ui/button";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/Skeleton/spinner";
 import { useForm } from "react-hook-form";
 import { categoryProp, productsProp } from "@/lib/types";
-import BannerImages from "@/components/wholeImageComponent";
+import BannerImages from "@/components/Image Uploads/wholeImageComponent";
 import { errorMsg, formSchema, inputFeilds } from "@/lib/common";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import FormSkeleton from "@/components/formSkeleton";
+import FormSkeleton from "@/components/Skeleton/formSkeleton";
 import { mutate } from "swr";
 
 interface ProductFormProps {
@@ -79,7 +79,7 @@ const ProductForm = ({
         photos: finalImages,
       },
     };
-
+    //  sennding form data to the database.
     try {
       const url =
         mode === "add"
@@ -111,6 +111,10 @@ const ProductForm = ({
 
       router.push("/admin/products");
     } catch (error: unknown) {
+      toast({
+        title: `Product ${mode === "add" ? "Add" : "Update"} Failed`,
+        description: `Failed to ${mode === "add" ? "Add" : "Update"} Product.`,
+      });
       errorMsg(error);
     } finally {
       setIsSubmitting(false);
@@ -161,7 +165,9 @@ const ProductForm = ({
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <Spinner />
+              <Spinner
+                name={mode === "add" ? "Submitting..." : "Updating..."}
+              />
             ) : mode === "add" ? (
               "Add Product"
             ) : (

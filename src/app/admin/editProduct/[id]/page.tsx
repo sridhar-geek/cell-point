@@ -3,8 +3,8 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { categoryProp, productsProp } from "@/lib/types";
-import FormSkeleton from "@/components/formSkeleton";
-import ProductForm from "@/components/productForm";
+import FormSkeleton from "@/components/Skeleton/formSkeleton";
+import ProductForm from "@/components/Product/productForm";
 
 const EditProduct = () => {
   const params = useParams();
@@ -14,7 +14,7 @@ const EditProduct = () => {
     data: productData,
     isLoading: productLoading,
     error: productError,
-  } = usePersistentSWR<productsProp[]>(
+  } = usePersistentSWR<productsProp>(
     `singleProduct/${id}`,
     `/api/supabase/product/${id}`
   );
@@ -24,7 +24,7 @@ const EditProduct = () => {
     isLoading: categoriesLoading,
     error: categoriesError,
   } = usePersistentSWR<categoryProp[]>(
-    "allcategories",
+    "allCategories",
     "/api/supabase/category"
   );
 
@@ -44,7 +44,7 @@ const EditProduct = () => {
     <ProductForm
       mode="edit"
       productId={id}
-      initialData={productData?.[0]}
+      initialData={productData}
       categories={categories || []}
     />
   );

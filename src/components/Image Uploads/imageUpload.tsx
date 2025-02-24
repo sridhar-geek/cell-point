@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Label } from "../ui/label";
 
 const ImageUploader = ({ onUpload }: { onUpload: (images: File[]) => void }) => {
   const [images, setImages] = useState<File[]>([]);
@@ -32,9 +33,9 @@ const ImageUploader = ({ onUpload }: { onUpload: (images: File[]) => void }) => 
         className="hidden"
         id="image-upload"
       />
-      <label htmlFor="image-upload" className="cursor-pointer">
+      <Label htmlFor="image-upload" className="cursor-pointer">
         Click to upload images (max 1MB each)
-      </label>
+      </Label>
     </div>
   );
 };

@@ -11,7 +11,6 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const requestData = await req.json();
-    console.log("data form body", requestData);
 
     if (requestData.length === 0) {
       return new NextResponse(
@@ -25,7 +24,6 @@ export async function PATCH(req: NextRequest) {
           photos: requestData,
         },
       };
-      console.log("Updated data", updateData);
 
     const supabase = getSupabaseClient(token);
 
@@ -36,7 +34,6 @@ export async function PATCH(req: NextRequest) {
       .eq("id", id)
       .select();
 
-      console.log("data", data, "error", error);
     if (error) {
       throw new Error(error.message);
     }

@@ -7,7 +7,7 @@ import {
   LayoutDashboard,
   FolderClosed,
   FileText,
-  SquareX,
+  CircleX,
   Images,
 } from "lucide-react";
 import { Navigation } from "@/lib/types";
@@ -58,7 +58,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
       {/* Cancel button */}
       <div className="flex justify-end">
         <Button onClick={toggleSidebar} className="md:hidden" variant="ghost">
-          <SquareX size="58px" className="text-lg" />
+          <CircleX size="80px" className="text-lg hover:transform hover:scale-125 transition ease-in-out duration-150" />
         </Button>
       </div>
       {/* Logo */}

@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
 
 
 export async function POST(req: NextRequest) {
-  console.log("request came to images upload");
   const { token } = getTokenandId(req);
   if (!token)
     return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
@@ -33,7 +32,6 @@ export async function POST(req: NextRequest) {
 
   try {
     const requestData = await req.json();
-    console.log("body data", requestData);
 
     if (!requestData) {
       return new NextResponse(
@@ -59,7 +57,6 @@ export async function POST(req: NextRequest) {
 
       uploadedUrls.push(data.publicUrl);
     }
-    console.log("urls", uploadedUrls);
     return new NextResponse(
       JSON.stringify({
         uploadedUrls,

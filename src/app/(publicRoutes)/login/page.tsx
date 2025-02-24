@@ -15,7 +15,7 @@ import {
 import { Form } from "@/components/ui/form";
 import FormFeild from "@/components/formFeild";
 import { useToast } from "@/hooks/use-toast";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/Skeleton/spinner";
 import { useTransition } from "react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -61,8 +61,6 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const email = values.email;
     const password = values.password;
-    console.log("login values", values);
-
     startTransition(async () => {
       try {
         const response = await supabase.auth.signInWithPassword({
@@ -75,7 +73,6 @@ export default function LoginPage() {
           toast({
             title: "Login Successful",
             description: `Welcome User`,
-            variant: "default",
           });
           const session = response.data.session;
           session.expires_at = Math.floor(Date.now() / 1000) + 864000; // 10 days in seconds
@@ -96,7 +93,6 @@ export default function LoginPage() {
           });
         }
       } catch (error: unknown) {
-        // Handle unexpected errors
         const errorMessage =
           (error as { response?: { data?: { message?: string } } }).response
             ?.data?.message || (error as Error).message;
@@ -137,7 +133,7 @@ export default function LoginPage() {
                 />
               ))}
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? <Spinner /> : "Login"}
+                {isPending ? <Spinner name="Submitting" /> : "Login"}
               </Button>
             </form>
           </Form>

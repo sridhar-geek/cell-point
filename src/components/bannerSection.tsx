@@ -6,7 +6,7 @@ import { bannerImagesProp } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 
 const BannerSection = () => {
-  const { data, isLoading, error } = usePersistentSWR<bannerImagesProp[]>(
+  const { data, isLoading, error } = usePersistentSWR<bannerImagesProp>(
     "bannerImages",
     "/api/supabase/common"
   );
@@ -29,7 +29,7 @@ const BannerSection = () => {
   return (
     <div>
       {data && (
-        <CarouselBanner imageLinks={data[0].bannerImages.photos || []} />
+        <CarouselBanner imageLinks={data.bannerImages.photos || []} />
       )}
     </div>
   );

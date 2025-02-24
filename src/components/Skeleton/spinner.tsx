@@ -1,6 +1,11 @@
 import { cn } from "@/lib/utils";
 
-const Spinner = ({ className }: { className?: string }) => {
+type SpinnerProps = {
+  className? :string
+  name: string
+}
+
+const Spinner = ({ className,name }: SpinnerProps) => {
   return (
     <aside className="flex gap-3 justify-center items-center">
       <div
@@ -13,7 +18,7 @@ const Spinner = ({ className }: { className?: string }) => {
       >
         <span className="sr-only">Loading...</span>
       </div>
-      <p>Loading....</p>
+      <p>{name}</p>
     </aside>
   );
 };

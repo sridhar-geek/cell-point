@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { phoneNumber } from "@/lib/data";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
-import { Skeleton } from "@/components/ui/skeleton";
 import { productsProp } from "@/lib/types";
-// import { product } from "@/lib/data";
+import { ProductSkeleton } from "@/components/Skeleton/skeleton";
+import Link from "next/link";
 
 const ProductsInfo = () => {
   const router = useRouter();
@@ -19,11 +19,12 @@ const ProductsInfo = () => {
   const [url, setUrl] = useState("");
   const [hydrated, setHydrated] = useState(false);
 
+  //  Get product data from database
   const {
     data: product,
     isLoading,
     error,
-  } = usePersistentSWR<productsProp[]>(
+  } = usePersistentSWR<productsProp>(
     `singleProduct/${id}`,
     `/api/supabase/product/${id}`
   );
@@ -34,16 +35,7 @@ const ProductsInfo = () => {
   }, []);
 
   if (!hydrated || isLoading) {
-    return (
-      <div className="flex-col">
-        <Skeleton className="w-full h-[230px] md:h-[400px] md:max-w-[930px]" />
-        <div className="space-y-2 mt-10">
-          <Skeleton className="h-2 md:h-4 w-[125px] md:w-[250px]" />
-          <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
-          <Skeleton className="h-2 md:h-4 w-[90px] md:w-[200px]" />
-        </div>
-      </div>
-    );
+    return <ProductSkeleton />;
   }
 
   if (error) {
@@ -61,7 +53,7 @@ const ProductsInfo = () => {
       if (navigator.share) {
         await navigator.share({
           title: `Check out this cool ${
-            product ? product[0].name : "Amazing gadget"
+            product ? product.name : "Amazing gadget"
           } from Divya Cell Point `,
           url,
         });
@@ -70,7 +62,7 @@ const ProductsInfo = () => {
         toast({
           title: "Link Copied",
           description: `Check out this cool ${
-            product ? product[0].name : "Amazing gadget"
+            product ? product.name : "Amazing gadget"
           }  from Divya Cell Point `,
           variant: "default",
         });
@@ -87,9 +79,6 @@ const ProductsInfo = () => {
 
   const handleBuy = () => {
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}`;
-
-    // Open WhatsApp in a new tab
-    window.open(whatsappUrl, "_blank");
 
     // Copy the WhatsApp URL to the clipboard
     navigator.clipboard
@@ -109,12 +98,14 @@ const ProductsInfo = () => {
           variant: "destructive",
         });
       });
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, "_blank");
   };
   return (
     <div className="min-h-screen py-6">
       <ArrowLeft
         onClick={() => router.back()}
-        className="cursor-pointer m-6 text-gray-700 hover:text-gray-900"
+        className="cursor-pointer m-6 text-gray-700 hover:text-gray-900 transition hover:scale-125 duration-150"
         size={44}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -122,7 +113,7 @@ const ProductsInfo = () => {
           <>
             {/* Image Carousel */}
             <div className="mb-8">
-              <CarouselBanner imageLinks={product[0].photos?.photos || []} />
+              <CarouselBanner imageLinks={product.photos?.photos || []} />
             </div>
 
             {/* Product Information */}
@@ -131,10 +122,10 @@ const ProductsInfo = () => {
               <div className="space-y-6">
                 <div className="text-center md:text-left">
                   <h1 className="text-3xl font-bold text-gray-900">
-                    {product[0].name}
+                    {product.name}
                   </h1>
                   <h3 className="text-sm text-gray-500 mt-2">
-                    {product[0].categoryName}
+                    {product.categoryName}
                   </h3>
                 </div>
 
@@ -147,13 +138,13 @@ const ProductsInfo = () => {
                     {new Intl.NumberFormat("en-IN", {
                       style: "currency",
                       currency: "INR",
-                    }).format(product[0].price)}
+                    }).format(product.price)}
                   </div>
                   <div className="text-2xl font-bold text-green-600">
                     {new Intl.NumberFormat("en-IN", {
                       style: "currency",
                       currency: "INR",
-                    }).format(product[0].offerPrice)}
+                    }).format(product.offerPrice)}
                   </div>
                 </div>
 
@@ -171,7 +162,7 @@ const ProductsInfo = () => {
                 </div>
                 {/*Availablity  */}
                 <div>
-                  {product[0].available ? (
+                  {product.available ? (
                     <span className="text-green-800 font-bold">
                       It is readily Available
                     </span>
@@ -187,7 +178,7 @@ const ProductsInfo = () => {
                     Description
                   </h2>
                   <p className="text-gray-600 indent-4">
-                    {product[0].description}
+                    {product.description}
                   </p>
                 </div>
               </div>
@@ -210,8 +201,12 @@ const ProductsInfo = () => {
             </div>
           </>
         ) : (
-          <div className="text-center text-gray-700">
-            No product data available
+          <div>
+            {/* showing no product */}
+            <div className="text-center text-gray-700">
+              😟😟No product data available.....
+            </div>
+            <Link href={"/"}>Try Again</Link>
           </div>
         )}
       </div>

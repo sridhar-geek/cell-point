@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import RenderCategories from "./renderCategories";
+import RenderCategories from "./Product/renderCategories";
 import { productsProp, categoryProp } from "@/lib/types";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
-import { CategorySkeleton, CardSkeleton } from "./skeleton";
-// import { products, categories } from "@/lib/data";
+import { CategorySkeleton, CardSkeleton } from "./Skeleton/skeleton";
 import { groupByCategory } from "@/lib/common";
+import { Bounce } from "./Skeleton/loading";
+
+
 const NonPrioritySection = () => {
   const [localCategory, setLocalCategory] = useState("All");
   const [hydrated, setHydrated] = useState(false);
@@ -24,14 +26,12 @@ const NonPrioritySection = () => {
     isLoading: categoriesLoading,
     error: categoryError,
   } = usePersistentSWR<categoryProp[]>(
-    "categories",
+    "nonPriorityCategories",
     "/api/supabase/category?priority=false"
   );
 
   if (!hydrated || categoriesLoading) {
-    return (
-      <CategorySkeleton />
-    );
+    return <CategorySkeleton />;
   }
 
   const groupedProducts = data ? groupByCategory(data, localCategory) : {};
@@ -82,7 +82,8 @@ const NonPrioritySection = () => {
         Array.from({ length: 3 }).map((_, index) => (
           <div key={index}>
             <h3 className="text-2xl font-bold m-2">
-              Categories Loading <span className="animate-bounce">....</span>
+              Categories Loading  <Bounce />
+              
             </h3>
             <CardSkeleton />
           </div>

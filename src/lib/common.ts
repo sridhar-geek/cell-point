@@ -50,25 +50,25 @@ export const getTokenandId = (req: NextRequest) => {
   return { id, token };
 };
 
-export const formSchema = z
-  .object({
-    name: z
-      .string({
-        required_error: "Product name is required",
-      })
-      .min(4, "At least 4 characters required"),
-    categoryName: z.string({
-      required_error: "Please select a CategoryName for your product.",
-    }),
-    offerPrice: z.number().min(10, "Offer price must be a greater than 10"),
-    price: z.number().min(15, "Price must be a greater than 15"),
-    available: z.boolean(),
-    description: z.string().min(10, "Minimum of 10 Characters required"),
-  });
-  // .refine(
-  //   (data) => data.offerPrice < data.price,
-  //   "Offer price must be less than the price"
-  // );
+
+export const formSchema = z.object({
+  name: z
+    .string({
+      required_error: "Product name is required",
+    })
+    .min(4, "At least 4 characters required"),
+  categoryName: z.string({
+    required_error: "Please select a CategoryName for your product.",
+  }),
+  offerPrice: z.number().min(10, "Offer price must be a greater than 10"),
+  price: z.number().min(15, "Price must be a greater than 15"),
+  available: z.boolean(),
+  description: z.string().min(10, "Minimum of 10 Characters required"),
+});
+// .refine(
+//   (data) => data.offerPrice < data.price,
+//   "Offer price must be less than the price"
+// );
 
 export const inputFeilds = [
   {

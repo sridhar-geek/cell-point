@@ -1,5 +1,5 @@
 "use client";
-import AdminHeader from "@/components/adminHeader";
+import AdminHeader from "@/components/Header/adminHeader";
 import Sidebar from "@/components/sidebar";
 import { useState } from "react";
 

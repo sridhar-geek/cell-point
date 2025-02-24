@@ -57,7 +57,7 @@ const ImagePreviewer = ({
                     />
                     <button
                       onClick={() => handleDelete(image, index)}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 px-2"
                     >
                       ✕
                     </button>

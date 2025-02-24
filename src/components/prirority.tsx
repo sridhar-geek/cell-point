@@ -1,11 +1,11 @@
 "use client";
-import RenderCategories from "./renderCategories";
+import RenderCategories from "./Product/renderCategories";
 import { productsProp } from "@/lib/types";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { useEffect, useState } from "react";
-import {CardSkeleton} from "./skeleton";
-// import { products } from "@/lib/data";
 import { groupByCategory } from "@/lib/common";
+import {  CardSkeleton } from "./Skeleton/skeleton";
+import { Bounce } from "./Skeleton/loading";
 
 const PrioritySection = () => {
   const { data, isLoading, error } = usePersistentSWR<productsProp[]>(
@@ -22,7 +22,10 @@ const PrioritySection = () => {
   if (!hydrated || isLoading) {
     return (
       <div>
-        <h3 className="text-2xl font-bold m-2">New Lanches</h3>
+        <h3 className="text-2xl font-bold m-2">
+          New Lanches
+          <Bounce />
+        </h3>
         <CardSkeleton />
       </div>
     );

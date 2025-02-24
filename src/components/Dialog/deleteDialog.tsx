@@ -13,8 +13,7 @@ import {
 import { Trash2 } from "lucide-react";
 import { mutate } from "swr";
 import { errorMsg } from "@/lib/common";
-import Spinner from "./spinner";
-// import { productsProp } from "@/lib/types";
+import Spinner from "../Skeleton/spinner";
 
 type DeleteDialogProps = {
   id: string;
@@ -69,7 +68,7 @@ const DeleteDialog = ({
       });
 
       // Revalidate the data to ensure it's up-to-date
-      mutate(product ? "allProducts" : "allcategories");
+      mutate(product ? "allProducts" : "allCategories");
 
       setIsLoading(false);
       // Close dialog after deletion
@@ -111,7 +110,7 @@ const DeleteDialog = ({
       </DialogTrigger>
 
       <DialogContent
-        className="sm:max-w-[425px] bg-white"
+        className="max-w-[300px] sm:max-w-[420px] bg-white rounded-md"
         onClick={(event) => event.stopPropagation()}
       >
         <DialogHeader>
@@ -136,7 +135,7 @@ const DeleteDialog = ({
 
         {isLoading ? (
           <Button>
-            <Spinner />
+            <Spinner name={"Deleting..."} />
           </Button>
         ) : (
           <div className="w-full flex justify-around items-center">

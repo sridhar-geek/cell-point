@@ -2,8 +2,8 @@
 import React from "react";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { categoryProp } from "@/lib/types";
-import FormSkeleton from "@/components/formSkeleton";
-import ProductForm from "@/components/productForm";
+import FormSkeleton from "@/components/Skeleton/formSkeleton";
+import ProductForm from "@/components/Product/productForm";
 
 const AddProduct = () => {
   const {
@@ -11,7 +11,7 @@ const AddProduct = () => {
     isLoading,
     error,
   } = usePersistentSWR<categoryProp[]>(
-    "allcategories",
+    "allCategories",
     "/api/supabase/category"
   );
 
@@ -22,7 +22,7 @@ const AddProduct = () => {
   if (error) {
     return (
       <div className="text-red-800 flex justify-center items-center h-44">
-        Error Occurred while getting categories.
+        Error Occurred while Loading Add Product Form
       </div>
     );
   }

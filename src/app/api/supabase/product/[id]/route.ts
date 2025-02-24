@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
     if (productResponse.error) throw new Error(productResponse.error.message);
     if (productResponse.data.length < 1)
       throw new Error(JSON.stringify("No Product found."));
-
-    return new NextResponse(JSON.stringify(productResponse.data), {
+    // return single Product......
+    return new NextResponse(JSON.stringify(productResponse.data[0]), {
       status: 200,
     });
   } catch (error: unknown) {
@@ -48,12 +48,11 @@ export async function PATCH(req: NextRequest) {
       .eq("id", id)
       .select();
 
-
     if (error) {
       throw new Error(error.message);
     }
 
-    if (data=== null || data.length === 0) {
+    if (data === null || data.length === 0) {
       return new NextResponse(
         JSON.stringify({ error: "No matching product found." }),
         { status: 404 }
@@ -71,7 +70,6 @@ export async function PATCH(req: NextRequest) {
     return errorMsg(error);
   }
 }
-
 
 export async function DELETE(req: NextRequest) {
   const { id, token } = getTokenandId(req);

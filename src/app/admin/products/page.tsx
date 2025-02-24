@@ -2,8 +2,8 @@
 import { productsProp } from "@/lib/types";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { Search } from "lucide-react";
-import ProductCard from "@/components/productCard";
-import { CardSkeleton } from "@/components/skeleton";
+import ProductCard from "@/components/Product/productCard";
+import { CardSkeleton } from "@/components/Skeleton/skeleton";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

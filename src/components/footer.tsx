@@ -23,7 +23,11 @@ const Footer = () => {
           <h4 className="footer_items font-bold">Contact Us</h4>
           <div className="footer_items flex items-center gap-2">
             {" "}
-            <MapPin /> Maduthuru, Atchuthapuram
+            <MapPin />
+            <div className="flex flex-col">
+              <span>Maduthuru, Atchuthapuram</span>
+              <span>Gajuwaka road, Atchuthapuram</span>
+            </div>
           </div>
           <div className="footer_items flex items-center gap-2">
             <Phone />
@@ -38,9 +42,7 @@ const Footer = () => {
       <div className="border border-gray-500 border-x-2"></div>
       <div className="text-center mt-3">
         {/* Link to login page */}
-        <Link href={"/login"}>
-          CopyRights © Divya Cell Point 2025
-        </Link>{" "}
+        <Link href={"/login"}>CopyRights © Divya Cell Point 2025</Link>{" "}
       </div>
     </footer>
   );

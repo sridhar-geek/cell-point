@@ -10,14 +10,36 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { Form } from "./ui/form";
+import { Button } from "../ui/button";
+import { Form } from "../ui/form";
 import { useState } from "react";
-import FormFeild from "./formFeild";
+import FormFeild from "../formFeild";
 import { useToast } from "@/hooks/use-toast";
 import { mutate } from "swr";
 import { errorMsg } from "@/lib/common";
-import Spinner from "./spinner";
+import Spinner from "../Skeleton/spinner";
+
+// Zod form Schema
+const formSchema = z.object({
+  name: z.string().min(4).max(50),
+  priority: z.boolean().default(false),
+});
+
+// Form Feilds
+const inputFormFeilds = [
+  {
+    name: "name",
+    label: "Category Name",
+    type: "text",
+    placeholder: "category name",
+  },
+  {
+    name: "priority",
+    label: "Priority",
+    type: "checkbox",
+    placeholder: "priority",
+  },
+];
 
 const EditDialog = ({
   open,
@@ -39,12 +61,6 @@ const EditDialog = ({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Zod form Schema
-  const formSchema = z.object({
-    name: z.string().min(4).max(50),
-    priority: z.boolean().default(false),
-  });
-
   // Creating form instance
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,26 +70,12 @@ const EditDialog = ({
     },
   });
 
-  // Form Feilds
-  const inputFormFeilds = [
-    {
-      name: "name",
-      label: "Category Name",
-      type: "text",
-      placeholder: "category name",
-    },
-    {
-      name: "priority",
-      label: "Priority",
-      type: "checkbox",
-      placeholder: "priority",
-    },
-  ];
   const data = localStorage.getItem("supabaseSession");
   const session = data ? JSON.parse(data) : null;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    // send api request based on the add or patch
     try {
       const url = add
         ? "/api/supabase/category"
@@ -93,7 +95,7 @@ const EditDialog = ({
         throw new Error("Network response was not ok");
       }
       // Revalidate the data to ensure it's up-to-date
-      mutate("allcategories");
+      mutate("allCategories");
       setIsLoading(false);
       onClose();
       // Show success toast
@@ -106,13 +108,19 @@ const EditDialog = ({
     } catch (error: unknown) {
       setIsLoading(false);
       onClose();
+      toast({
+        title: add ? "Failed to Add " : `Failed to modify ${name} Category`,
+        description: add
+          ? `Failed to add new  Category to your list`
+          : ` Failed to modify Category ${name} try again`,
+      });
       return errorMsg(error);
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] rounded-md">
+      <DialogContent className="max-w-[300px] sm:max-w-[420px] bg-white rounded-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -134,7 +142,11 @@ const EditDialog = ({
               />
             ))}
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? <Spinner /> : "Submit"}
+              {isLoading ? (
+                <Spinner name={add ? "Adding..." : "Updating..."} />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
         </Form>

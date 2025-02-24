@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import ImageUploader from "@/components/imageUpload";
-import ImagePreviewer from "@/components/imagePreviewer";
+import ImageUploader from "@/components/Image Uploads/imageUpload";
+import ImagePreviewer from "@/components/Image Uploads/imagePreviewer";
 import { getSupabaseClient, supabase } from "@/lib/supabaseClient";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
+import Spinner from "../Skeleton/spinner";
 // import Spinner from "./spinner";
 
 type BannerImagesProp = {
@@ -49,8 +50,8 @@ const BannerImages = ({ supabaseStorage, onSave }: BannerImagesProp) => {
   // Handle saving images
   const handleSave = async () => {
     setIsUpload(true);
-    console.log("uplading images", uploadedImages);
     try {
+      // sending images to the storage and get the url
       const uploadedImageUrls = await uploadImagesToSupabase(uploadedImages);
       const updatedImages = [...supabaseImages, ...uploadedImageUrls];
       onSave(updatedImages);
@@ -126,7 +127,7 @@ const BannerImages = ({ supabaseStorage, onSave }: BannerImagesProp) => {
       />
       <ImageUploader onUpload={handleUpload} />
       <Button onClick={handleSave}>
-        {isUpload ? "Uploading...." : "Save Images"}
+        {isUpload ? <Spinner name={"Updating..."} /> : "Save Images"}
       </Button>
       {/* </div>
       )} */}

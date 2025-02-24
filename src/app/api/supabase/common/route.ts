@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
     if (error) {
       throw new Error(error.message);
     }
-    return new NextResponse(JSON.stringify(data), {
+    // return single object......
+    return new NextResponse(JSON.stringify(data[0]), {
       status: 200,
     });
   } catch (error: unknown) {

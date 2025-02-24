@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { usePersistentSWR } from "@/lib/usePersistentSwr";
 import { bannerImagesProp } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import BannerImages from "@/components/wholeImageComponent";
+import BannerImages from "@/components/Image Uploads/wholeImageComponent";
 import { Button } from "@/components/ui/button";
 import { mutate } from "swr";
 import { errorMsg } from "@/lib/common";
 import { useToast } from "@/hooks/use-toast";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/Skeleton/spinner";
 import { useRouter } from "next/navigation";
 
 const UpdateBannerImages = () => {
@@ -17,7 +17,7 @@ const UpdateBannerImages = () => {
   const [isImagesUpdating, setIsImagesUpdating] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { data, isLoading, error } = usePersistentSWR<bannerImagesProp[]>(
+  const { data, isLoading, error } = usePersistentSWR<bannerImagesProp>(
     "bannerImages",
     "/api/supabase/common"
   );
@@ -30,8 +30,8 @@ const UpdateBannerImages = () => {
 
   // Initialize supabaseImages with data from API
   useEffect(() => {
-    if (data && data[0]?.bannerImages?.photos) {
-      setSupabaseImages(data[0].bannerImages.photos);
+    if (data && data?.bannerImages?.photos) {
+      setSupabaseImages(data.bannerImages.photos);
     }
   }, [data]);
 
@@ -47,10 +47,11 @@ const UpdateBannerImages = () => {
 
   // Save images to the database
   const saveImagesToDatabase = async () => {
-    const id = data && data[0].id;
+    const id = data && data.id;
     const localstorageData = localStorage.getItem("supabaseSession");
     const session = localstorageData ? JSON.parse(localstorageData) : null;
     setIsImagesUpdating(true);
+    //  sending patch request to update the common table
     try {
       const response = await fetch(`/api/supabase/common/${id}`, {
         method: "PATCH",
@@ -63,7 +64,6 @@ const UpdateBannerImages = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      console.log("response", response);
       // Revalidate the data to ensure it's up-to-date
       mutate("bannerImages");
       setIsImagesUpdating(false);
@@ -73,8 +73,16 @@ const UpdateBannerImages = () => {
       });
       router.push("/admin/dashboard");
     } catch (error: unknown) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } }).response?.data
+          ?.message || (error as Error).message;
+
       setIsImagesUpdating(false);
-      console.log(error);
+      toast({
+        title: "Error occoured in updating Images",
+        description: errorMessage || "falied to update",
+        variant : "destructive"
+      });
       return errorMsg(error);
     }
   };
@@ -88,7 +96,7 @@ const UpdateBannerImages = () => {
         className="mt-4 px-4 py-2 bg-black text-white rounded"
         disabled={finalImages.length === 0}
       >
-        {isImagesUpdating ? <Spinner /> : "Conform"}
+        {isImagesUpdating ? <Spinner name={"Updating..."}/> : "Conform"}
       </Button>
     </div>
   );

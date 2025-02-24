@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation";
 import { Star, Heart, CircleDot, FilePenLine } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import DeleteDialog from "./DeleteDialog";
+import DeleteDialog from "../Dialog/deleteDialog";
 import { productCardProp } from "@/lib/types";
 
 const ProductCard = ({ product, admin }: productCardProp) => {
