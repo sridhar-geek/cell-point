@@ -19,25 +19,24 @@ const GoogleMap = () => {
   const google_api_key = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
   const mapId = process.env.NEXT_PUBLIC_MAPID;
 
-  
   return (
     <APIProvider apiKey={google_api_key}>
       <div style={{ height: "100%", width: "100%" }}>
         <Map
           key={mapId}
-          zoom={20}
+          zoom={15}
           center={maduthuru}
           mapId={mapId}
           disableDefaultUI={false}
           gestureHandling="auto"
-                >
+        >
           {/* First Marker */}
           <AdvancedMarker
             ref={markerRef1}
             onClick={() => setInfowindowOpen1(true)}
             position={maduthuru}
             title={"Divya Cell Point Maduthuru"}
-          />
+          ></AdvancedMarker>
           {infowindowOpen1 && (
             <InfoWindow
               anchor={marker1}
@@ -55,7 +54,7 @@ const GoogleMap = () => {
             onClick={() => setInfowindowOpen2(true)}
             position={atchuthapuram}
             title={"Divya Cell Point Atchuthapuram"}
-          />
+          ></AdvancedMarker>
           {infowindowOpen2 && (
             <InfoWindow
               anchor={marker2}

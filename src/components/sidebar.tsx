@@ -7,11 +7,9 @@ import {
   LayoutDashboard,
   FolderClosed,
   FileText,
-  CircleX,
   Images,
 } from "lucide-react";
 import { Navigation } from "@/lib/types";
-import { Button } from "./ui/button";
 
 // navigation names
 const navigation = [
@@ -51,16 +49,11 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 
   const handleNavigation = (nav: Navigation) => {
     setCurrentPage(nav.routeName);
+     toggleSidebar()
     router.push(nav.route);
   };
   return (
     <section>
-      {/* Cancel button */}
-      <div className="flex justify-end">
-        <Button onClick={toggleSidebar} className="md:hidden" variant="ghost">
-          <CircleX size="80px" className="text-lg hover:transform hover:scale-125 transition ease-in-out duration-150" />
-        </Button>
-      </div>
       {/* Logo */}
       <Image
         src="/logo.png"
