@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { productsProp } from "./types";
 import { z } from "zod";
+import { supabase } from "./supabaseClient";
 
 // Function to group products by category
 export const groupByCategory = (
@@ -46,10 +47,43 @@ export const getTokenandId = (req: NextRequest) => {
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
     : undefined;
+  const refreshToken = req.headers.get("refresh-token");
 
-  return { id, token };
+  return { id, token, refreshToken };
 };
 
+export const isTokenExpired = (token: string): boolean => {
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  const currentTime = Math.floor(Date.now() / 1000);
+  return payload.exp < currentTime;
+};
+
+export const handleTokenRefresh = async (
+  accessToken: string,
+  refreshToken: string
+) => {
+  if (!accessToken || !refreshToken) {
+    throw new Error("Missing tokens");
+  }
+
+  //  return token if they are valid (time is not expired)
+  if (!isTokenExpired(accessToken)) {
+    return { accessToken, refreshToken };
+  }
+
+  const { data, error } = await supabase.auth.refreshSession({
+    refresh_token: refreshToken,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return {
+    accessToken: data.session?.access_token || accessToken,
+    refreshToken: data.session?.refresh_token || refreshToken ,
+  };
+};
 
 export const formSchema = z.object({
   name: z

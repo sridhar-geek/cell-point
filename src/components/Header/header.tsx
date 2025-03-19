@@ -10,7 +10,7 @@ const Header = () => {
   const { toast } = useToast();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,7 +97,7 @@ const Header = () => {
             onClick={() => handleSocialClick("https://www.instagram.com/")}
           />
           <Image
-            src="/whats.svg"
+            src="/whatsApp.svg"
             alt="WhatsApp Icon"
             width={22}
             height={22}

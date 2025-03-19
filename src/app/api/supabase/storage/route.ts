@@ -1,6 +1,7 @@
 import { getSupabaseClient, supabase } from "@/lib/supabaseClient";
 import { NextRequest, NextResponse } from "next/server";
-import { errorMsg, getTokenandId } from "@/lib/common";
+import { errorMsg, getTokenandId, handleTokenRefresh } from "@/lib/common";
+
 
 export async function GET(req: NextRequest) {
   const { id } = getTokenandId(req);
@@ -23,66 +24,33 @@ export async function GET(req: NextRequest) {
 }
 
 
-export async function POST(req: NextRequest) {
-  const { token } = getTokenandId(req);
-  if (!token)
-    return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-    });
-
-  try {
-    const requestData = await req.json();
-
-    if (!requestData) {
-      return new NextResponse(
-        JSON.stringify({ error: "No Images sent to update storage" }),
-        { status: 400 }
-      );
-    }
-    const uploadedUrls: string[] = [];
-    const supabase = getSupabaseClient(token);
-
-    for (const image of requestData) {
-      const filePath = `banner-images/${Date.now()}-${image.name}`;
-      const { error } = await getSupabaseClient(token)
-        .storage.from("images")
-        .upload(filePath, image);
-
-      if (error) {
-        console.error("Error uploading image:", error);
-        continue;
-      }
-
-      const { data } = supabase.storage.from("images").getPublicUrl(filePath);
-
-      uploadedUrls.push(data.publicUrl);
-    }
-    return new NextResponse(
-      JSON.stringify({
-        uploadedUrls,
-      }),
-      { status: 200 }
-    );
-  } catch (error) {
-    return errorMsg(error);
-  }
-}
-
 export async function DELETE(req: NextRequest) {
-  const { id, token } = getTokenandId(req);
-  if (!token)
+  const { id, token, refreshToken } = getTokenandId(req);
+  if (!token || !refreshToken)
     return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
     });
-  const supabase = getSupabaseClient(token);
+  const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+    await handleTokenRefresh(token, refreshToken);
+
+  // Initialize Supabase client with new access token
+  const supabase = getSupabaseClient(newAccessToken);
+
   try {
     const response = await supabase.from("Product").delete().eq("id", id);
     if (response.error) {
       throw new Error(response.error.message);
     } else {
-      return new NextResponse(JSON.stringify("Product delete Successfully"), {
-        status: 200,
-      });
+      return new NextResponse(
+        JSON.stringify({
+          message: "Product delete Successfully",
+          access_token: newAccessToken,
+          refresh_token: newRefreshToken,
+        }),
+        {
+          status: 200,
+        }
+      );
     }
   } catch (error: unknown) {
     return errorMsg(error);

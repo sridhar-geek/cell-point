@@ -1,3 +1,4 @@
+//  Get the Banner Images
 import { errorMsg } from "@/lib/common";
 import {  supabase } from "@/lib/supabaseClient";
 import { NextResponse, NextRequest } from "next/server";

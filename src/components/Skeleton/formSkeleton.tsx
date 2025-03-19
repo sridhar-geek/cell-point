@@ -10,7 +10,7 @@ const FormSkeleton = () => {
         <Skeleton className="h-40 w-full rounded-lg" />
       </div>
       <div className="space-y-6">
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 50 }).map((_, index) => (
           <div key={index} className="w-full">
             <Skeleton className="h-10 w-full" />
           </div>

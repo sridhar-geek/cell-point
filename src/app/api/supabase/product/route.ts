@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { NextResponse, NextRequest } from "next/server";
 import { getSupabaseClient } from "@/lib/supabaseClient";
-import { errorMsg, getTokenandId } from "@/lib/common";
+import { errorMsg, getTokenandId, handleTokenRefresh } from "@/lib/common";
 
 export async function GET(req: NextRequest) {
   try {
@@ -26,11 +26,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   // Extract Bearer Token
-  const { token } = getTokenandId(req);
-  if (!token)
+  const { token, refreshToken } = getTokenandId(req);
+  if (!token || !refreshToken)
     return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
     });
+
   try {
     const requestData = await req.json();
     // Validate required fields
@@ -43,7 +44,11 @@ export async function POST(req: NextRequest) {
       available,
       photos,
     } = requestData;
-    const supabase = getSupabaseClient(token);
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      await handleTokenRefresh(token, refreshToken);
+
+    // Initialize Supabase client with new access token
+    const supabase = getSupabaseClient(newAccessToken);
 
     // Insert new product
     const { data, error } = await supabase
@@ -69,6 +74,8 @@ export async function POST(req: NextRequest) {
       JSON.stringify({
         message: "Product created successfully",
         product: data,
+        access_token: newAccessToken,
+        refresh_token: newRefreshToken,
       }),
       { status: 201 }
     );

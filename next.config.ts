@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["tieigchmmwhwonipivot.supabase.co"],
   },
+  
 };
 
 export default nextConfig;

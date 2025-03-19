@@ -86,6 +86,7 @@ const EditDialog = ({
         method,
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          "Refresh-Token": session.refresh_token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
@@ -94,6 +95,12 @@ const EditDialog = ({
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+         const result = await response.json();
+         session.access_token = result.access_token;
+         session.refresh_token = result.refresh_token;
+         //  setting the new AccessToken and refreshToken in local storage
+         localStorage.setItem("supabaseSession", JSON.stringify(session));
+
       // Revalidate the data to ensure it's up-to-date
       mutate("allCategories");
       setIsLoading(false);

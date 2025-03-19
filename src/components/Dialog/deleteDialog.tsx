@@ -34,6 +34,7 @@ const DeleteDialog = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  //  retrieve the localStorage items --> access_token and refresh_token
   const data = localStorage.getItem("supabaseSession");
   const session = data ? JSON.parse(data) : null;
 
@@ -42,6 +43,7 @@ const DeleteDialog = ({
     event.stopPropagation();
     setIsLoading(true);
     try {
+      //  url to delete based on the product and category
       const url = product
         ? `/api/supabase/product/${id}`
         : `/api/supabase/category/${id}`;
@@ -49,6 +51,7 @@ const DeleteDialog = ({
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          "Refresh-Token": session.refresh_token,
           "Content-Type": "application/json",
         },
       });
@@ -56,6 +59,11 @@ const DeleteDialog = ({
       if (!response.ok) {
         throw new Error("Failed to delete product");
       }
+      const result = await response.json();
+      session.access_token = result.access_token;
+      session.refresh_token = result.refresh_token;
+//  setting the new AccessToken and refreshToken in local storage
+      localStorage.setItem("supabaseSession", JSON.stringify(session));
 
       // Show success toast
       toast({

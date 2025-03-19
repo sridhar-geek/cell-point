@@ -65,3 +65,9 @@ export type productCardProp = {
   admin: boolean;
 };
 
+
+export type MessageResponse = {
+  message: string,
+  access_token: string, 
+  refresh_token: string
+}

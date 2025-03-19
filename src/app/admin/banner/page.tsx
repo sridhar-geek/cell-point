@@ -47,7 +47,9 @@ const UpdateBannerImages = () => {
 
   // Save images to the database
   const saveImagesToDatabase = async () => {
+
     const id = data && data.id;
+    //  retrieve the localStorage items --> access_token and refresh_token
     const localstorageData = localStorage.getItem("supabaseSession");
     const session = localstorageData ? JSON.parse(localstorageData) : null;
     setIsImagesUpdating(true);
@@ -57,6 +59,7 @@ const UpdateBannerImages = () => {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          "Refresh-Token": session.refresh_token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(finalImages),
@@ -64,6 +67,12 @@ const UpdateBannerImages = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+        const result = await response.json();
+        session.access_token = result.access_token;
+        session.refresh_token = result.refresh_token;
+        //  setting the new AccessToken and refreshToken in local storage
+        localStorage.setItem("supabaseSession", JSON.stringify(session));
+
       // Revalidate the data to ensure it's up-to-date
       mutate("bannerImages");
       setIsImagesUpdating(false);
@@ -81,7 +90,7 @@ const UpdateBannerImages = () => {
       toast({
         title: "Error occoured in updating Images",
         description: errorMessage || "falied to update",
-        variant : "destructive"
+        variant: "destructive",
       });
       return errorMsg(error);
     }
